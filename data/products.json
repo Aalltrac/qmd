@@ -1,21 +1,5 @@
 [
   {
-    "id": "13fa4e87-3755-4a06-af2e-c5a92ccdca06",
-    "name": "test",
-    "brand": "test",
-    "images": [
-      "data/images/pending/16f31d2d-9cb6-4b07-8881-3aad743b5ee1_0.png",
-      "data/images/pending/16f31d2d-9cb6-4b07-8881-3aad743b5ee1_1.png",
-      "data/images/pending/16f31d2d-9cb6-4b07-8881-3aad743b5ee1_2.png",
-      "data/images/pending/16f31d2d-9cb6-4b07-8881-3aad743b5ee1_3.png"
-    ],
-    "positives": [],
-    "negatives": [],
-    "advice": "",
-    "score": 50,
-    "approvedAt": 1755640319295
-  },
-  {
     "id": "74a34c1c-96d8-42ba-83b4-1d23951db79f",
     "name": "Aucun produit publié",
     "brand": "None",
