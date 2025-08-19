@@ -1,10 +1,10 @@
 import { get, set } from "idb-keyval";
-import { KEYS } from "modules/constants.js";
-import { els } from "modules/dom.js";
-import { state, applyGhToUI } from "modules/state.js";
-import { seedData } from "modules/seed.js";
-import { trySyncFromGitHub, autoLoadObfuscatedToken } from "modules/github.js";
-import { bindUI, renderDiscover, renderPending } from "modules/ui.js";
+import { KEYS } from "./modules/constants.js";
+import { els } from "./modules/dom.js";
+import { state, applyGhToUI } from "./modules/state.js";
+import { seedData } from "./modules/seed.js";
+import { trySyncFromGitHub, autoLoadObfuscatedToken } from "./modules/github.js";
+import { bindUI, renderDiscover, renderPending } from "./modules/ui.js";
 
 async function init() {
   els.year.textContent = new Date().getFullYear();
