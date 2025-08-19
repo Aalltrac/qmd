@@ -697,12 +697,55 @@ async function fetchPendingImages(list) {
   })));
 }
 async function loadImageFromPath(path) {
-  if (!path || typeof path !== "string") return new Blob();
-  const rawBase = `https://raw.githubusercontent.com/${state.gh.owner}/${state.gh.repo}/${encodeURIComponent(state.gh.branch)}/${path}`;
-  const res = await fetch(rawBase);
-  if (!res.ok) return new Blob();
-  const blob = await res.blob();
-  return blob;
+  if (!path || typeof path !== "string") {
+    console.warn("Chemin d'image invalide:", path);
+    return new Blob();
+  }
+  
+  // Construire l'URL sans double encodage
+  const rawBase = `https://raw.githubusercontent.com/${state.gh.owner}/${state.gh.repo}/${state.gh.branch}/${path}`;
+  
+  console.log("Tentative de chargement de l'image:", rawBase);
+  
+  try {
+    const res = await fetch(rawBase);
+    
+    console.log(`Status de la requête pour ${path}:`, res.status);
+    
+    if (!res.ok) {
+      console.error(`Impossible de charger l'image: ${rawBase}`);
+      console.error(`Status: ${res.status} - ${res.statusText}`);
+      
+      // Vérifier si c'est une erreur 404 (fichier non trouvé)
+      if (res.status === 404) {
+        console.error("Le fichier n'existe pas dans le repository GitHub");
+      }
+      
+      return new Blob();
+    }
+    
+    const blob = await res.blob();
+    console.log(`Image chargée avec succès: ${path}, taille: ${blob.size} bytes`);
+    return blob;
+  } catch (error) {
+    console.error(`Erreur lors du chargement de l'image ${path}:`, error);
+    return new Blob();
+  }
+}
+
+async function testImageUrl(path) {
+  const rawBase = `https://raw.githubusercontent.com/${state.gh.owner}/${state.gh.repo}/${state.gh.branch}/${path}`;
+  console.log("URL générée:", rawBase);
+  
+  try {
+    const response = await fetch(rawBase);
+    console.log("Status:", response.status);
+    console.log("Content-Type:", response.headers.get('content-type'));
+    return response.ok;
+  } catch (error) {
+    console.error("Erreur:", error);
+    return false;
+  }
 }
 
 // --- Simple token obfuscation helpers ---
