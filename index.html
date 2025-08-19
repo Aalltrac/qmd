@@ -6,6 +6,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./styles-brand.css" />
   <script type="importmap">
   {
     "imports": {
@@ -27,10 +28,12 @@
       <button class="nav-btn" data-tab="discover" aria-current="page">Découvrir</button>
       <button class="nav-btn" data-tab="submit">Soumettre un produit</button>
       <button class="nav-btn" data-tab="moderate">Modération</button>
+      <button class="nav-btn" id="donateBtn">Faire un don</button>
     </nav>
   </header>
 
   <main>
+    <!-- Discover -->
     <section id="tab-discover" class="tab active" aria-labelledby="Découvrir">
       <div class="toolbar">
         <input id="search" type="search" placeholder="Rechercher un produit ou une marque..." aria-label="Recherche" />
@@ -46,6 +49,7 @@
       <p id="noProducts" class="empty hidden">Aucun produit trouvé.</p>
     </section>
 
+    <!-- Submit -->
     <section id="tab-submit" class="tab" aria-labelledby="Soumettre un produit">
       <h2>Proposer un produit</h2>
       <p class="muted">Vous pouvez proposer un produit non référencé. Nous vérifierons et compléterons les informations.</p>
@@ -75,12 +79,14 @@
       </form>
     </section>
 
+    <!-- Moderate -->
     <section id="tab-moderate" class="tab" aria-labelledby="Modération">
       <div id="modGate" class="mod-gate">
         <p>Section réservée à la modération.</p>
         <label for="modPass">Mot de passe</label>
         <input id="modPass" type="password" placeholder="Entrer le mot de passe" />
         <button id="modEnter" class="primary">Entrer</button>
+        <p class="muted tiny">Astuce: par défaut "qmd2025". À changer dans app.js si besoin.</p>
       </div>
       <div id="modPanel" class="hidden">
         <h2>File d’attente</h2>
@@ -154,6 +160,42 @@
     </form>
   </dialog>
 
+  <dialog id="donateDialog" class="editor">
+    <form method="dialog">
+      <h3>Soutenir QMD</h3>
+      <div class="donate-list">
+        <div>
+          <strong>PayPal</strong>
+          <p><a href="https://paypal.me/aalltraca" target="_blank" rel="noopener" class="link">paypal.me/aalltraca</a></p>
+        </div>
+        <div>
+          <strong>Virement bancaire (IBAN)</strong>
+          <div class="copy-row">
+            <code>FR76 1870 6000 0097 5769 3022 881</code>
+            <button type="button" class="ghost copy-btn" data-copy="FR76 1870 6000 0097 5769 3022 881">Copier</button>
+          </div>
+        </div>
+        <div>
+          <strong>Bitcoin (BTC)</strong>
+          <div class="copy-row">
+            <code>bc1q95k5zy0n2q0jng2ejtzs7e6krgrq7tyfcnqerv</code>
+            <button type="button" class="ghost copy-btn" data-copy="bc1q95k5zy0n2q0jng2ejtzs7e6krgrq7tyfcnqerv">Copier</button>
+          </div>
+        </div>
+        <div>
+          <strong>Ethereum (ETH)</strong>
+          <div class="copy-row">
+            <code>0x26c662e8a24a6c034Aa08cCD07829026c3129C47</code>
+            <button type="button" class="ghost copy-btn" data-copy="0x26c662e8a24a6c034Aa08cCD07829026c3129C47">Copier</button>
+          </div>
+        </div>
+      </div>
+      <menu class="dialog-actions">
+        <button value="cancel" class="ghost">Fermer</button>
+      </menu>
+    </form>
+  </dialog>
+
   <footer class="site-footer">
     <div class="footer-inner">
       <span>&copy; <span id="year"></span> QMD</span>
@@ -162,6 +204,6 @@
     </div>
   </footer>
 
-  <script type="module" src="./app.js"></script>
+  <script type="module" src="./main.js"></script>
 </body>
 </html>
