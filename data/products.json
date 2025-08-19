@@ -4,10 +4,10 @@
     "name": "test",
     "brand": "test",
     "images": [
-      "/data/images/pending/f783d4a8-994f-4985-9bef-3af17e79c2a4_0.png",
-      "/data/images/pending/f783d4a8-994f-4985-9bef-3af17e79c2a4_1.png",
-      "/data/images/pending/f783d4a8-994f-4985-9bef-3af17e79c2a4_2.png",
-      "/data/images/pending/f783d4a8-994f-4985-9bef-3af17e79c2a4_3.png"
+      "data/images/pending/f783d4a8-994f-4985-9bef-3af17e79c2a4_0.png",
+      "data/images/pending/f783d4a8-994f-4985-9bef-3af17e79c2a4_1.png",
+      "data/images/pending/f783d4a8-994f-4985-9bef-3af17e79c2a4_2.png",
+      "data/images/pending/f783d4a8-994f-4985-9bef-3af17e79c2a4_3.png"
     ],
     "positives": [
       "x"
