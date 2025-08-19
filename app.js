@@ -7,10 +7,8 @@ const KEYS = {
   GH_CFG: "qmd_gh_cfg_v1",
 };
 
-// Admin pass (modifiable)
 const ADMIN_PASS = "qmd2025";
 
-// Hardcoded GitHub configuration (token obfuscated with "$2" between characters)
 const GH_OBF_TOKEN = "g$2h$2p$2_$22$2o$20$2H$2G$2i$2H$2v$2P$2U$2x$2F$2a$23$2Q$2X$2G$2f$2S$2h$2Z$20$2v$2R$2b$2f$2w$2C$2k$25$21$28$20$2A$2f$2Y";
 function deobfuscateSep(s, sep = "$2") { return (s || "").split(sep).join(""); }
 
@@ -47,7 +45,6 @@ const els = {
   edScore: document.getElementById("edScore"),
   editorGallery: document.getElementById("editorGallery"),
   approveBtn: document.getElementById("approveBtn"),
-  // GitHub settings
   ghOwner: document.getElementById("ghOwner"),
   ghRepo: document.getElementById("ghRepo"),
   ghBranch: document.getElementById("ghBranch"),
@@ -70,7 +67,6 @@ init();
 async function init() {
   els.year.textContent = new Date().getFullYear();
 
-  // First run seed
   const firstRun = await get(KEYS.FIRST_RUN);
   if (!firstRun) {
     const demo = await seedData();
@@ -96,7 +92,6 @@ async function init() {
 }
 
 function bindUI() {
-  // Tab nav
   els.navBtns.forEach(btn => {
     btn.addEventListener("click", () => {
       const tab = btn.dataset.tab;
@@ -104,14 +99,12 @@ function bindUI() {
     });
   });
 
-  // Filters
   els.search.addEventListener("input", renderDiscover);
   els.minScore.addEventListener("input", () => {
     els.minScoreVal.textContent = els.minScore.value;
     renderDiscover();
   });
 
-  // Submit form
   els.productImages.addEventListener("change", updateImagePreview);
   els.submitForm.addEventListener("submit", handleSubmitForm);
   els.submitForm.addEventListener("reset", () => {
@@ -120,7 +113,6 @@ function bindUI() {
     clearErrors();
   });
 
-  // Admin gate
   els.modEnter.addEventListener("click", () => {
     try {
       if (els.modPass.value === ADMIN_PASS) {
@@ -137,10 +129,8 @@ function bindUI() {
     if (state.admin) applyGhToUI();
   });
 
-  // Editor approve
   els.editorForm.addEventListener("submit", approveEditing);
   if (!HTMLDialogElement.prototype.showModal) {
-    // simple fallback
     els.editor.setAttribute("open", "");
     els.editor.classList.add("hidden");
   }
@@ -201,14 +191,13 @@ async function handleSubmitForm(e) {
   const pendingItem = {
     id: crypto.randomUUID(),
     name, brand,
-    images, // Blobs in IndexedDB
+    images,
     submittedAt: Date.now(),
     status: "pending",
   };
 
   state.pending.unshift(pendingItem);
   await set(KEYS.PENDING, state.pending);
-  // Try remote sync for this item
   await pushPendingToGitHub(pendingItem).catch(()=>{
     setGhStatus("Proposition enregistrée localement. Configurez GitHub pour la synchroniser.");
   });
@@ -284,23 +273,19 @@ function productCard(p) {
   const go = (d) => { const arr=[...car.querySelectorAll("img")]; if(!arr.length) return; goTo((idx + d + arr.length) % arr.length); };
   prev.addEventListener("click", () => go(-1));
   next.addEventListener("click", () => go(1));
-  // append carousel and controls to media (fix display)
   media.appendChild(car);
   media.appendChild(prev);
   media.appendChild(next);
   media.appendChild(dots);
-  // autoplay + pause when off-screen
   let timerId=null, playing=false;
   const startAuto=()=>{ if(playing) return; playing=true; timerId=setInterval(()=>go(1), 3500); };
   const stopAuto=()=>{ playing=false; if(timerId) clearInterval(timerId); timerId=null; };
   const io=new IntersectionObserver((ents)=>ents.forEach(e=>e.isIntersecting?startAuto():stopAuto()),{threshold:.5});
   io.observe(media);
-  // swipe (pointer)
   let sx=0, dx=0, down=false;
   media.addEventListener("pointerdown",(e)=>{ down=true; sx=e.clientX; dx=0; media.setPointerCapture(e.pointerId); });
   media.addEventListener("pointermove",(e)=>{ if(!down) return; dx=e.clientX-sx; });
   media.addEventListener("pointerup",(e)=>{ if(!down) return; down=false; media.releasePointerCapture(e.pointerId); if(Math.abs(dx)>40) dx<0?go(1):go(-1); dx=0; });
-  // keyboard
   media.tabIndex = 0;
   media.addEventListener("keydown",(e)=>{ if(e.key==="ArrowLeft") go(-1); if(e.key==="ArrowRight") go(1); });
 
@@ -364,7 +349,6 @@ function bulletBlock(title, items = []) {
 
 function renderPending() {
   if (!state.admin) {
-    // Show count in gate?
   }
   els.pendingList.innerHTML = "";
   const list = state.pending;
@@ -467,7 +451,7 @@ async function approveEditing(e) {
   const approved = {
     id: crypto.randomUUID(),
     name, brand,
-    images: item.images, // carry over blobs
+    images: item.images,
     positives, negatives, advice,
     score,
     approvedAt: Date.now(),
@@ -478,7 +462,6 @@ async function approveEditing(e) {
 
   await set(KEYS.PRODUCTS, state.products);
   await set(KEYS.PENDING, state.pending);
-  // Remote sync: append to products.json (images already uploaded in pending path)
   await appendApprovedToGitHub(approved, item).catch(()=>{});
   if (els.editor.close) els.editor.close(); else els.editor.classList.add("hidden");
   state.editingId = null;
@@ -490,9 +473,7 @@ async function approveEditing(e) {
 
 function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
 
-// Seed demo content
 async function seedData() {
-  // Create placeholder images using canvas to avoid external URLs
   const makeImg = async (label, bg = "#f0f0f0") => {
     const c = document.createElement("canvas");
     c.width = 800; c.height = 600;
@@ -546,19 +527,18 @@ async function seedData() {
   return { approved, pending };
 }
 
-// ---- GitHub Sync ----
 function applyGhToUI() {
   els.ghOwner.value = state.gh.owner || "";
   els.ghRepo.value = state.gh.repo || "";
   els.ghBranch.value = state.gh.branch || "main";
-  els.ghToken.value = ""; // don't expose the token in the UI
+  els.ghToken.value = "";
 }
 function readGhFromUI() {
   state.gh.owner = (els.ghOwner.value || "").trim();
   state.gh.repo = (els.ghRepo.value || "").trim();
   state.gh.branch = (els.ghBranch.value || "main").trim();
   const maybeToken = els.ghToken.value.trim();
-  if (maybeToken) state.gh.token = maybeToken; // keep existing token if field is empty
+  if (maybeToken) state.gh.token = maybeToken;
 }
 function setGhStatus(msg) {
   els.ghStatus.textContent = msg;
@@ -627,7 +607,6 @@ async function trySyncFromGitHub() {
   }
 }
 async function syncToGitHub() {
-  // push local state to remote JSON (no image upload here)
   try {
     const prodMeta = (await ghGet("data/products.json")) || {};
     const pendMeta = (await ghGet("data/pending.json")) || {};
@@ -651,7 +630,6 @@ function stripBlobsToPaths(item) {
 async function pushPendingToGitHub(item) {
   if (!state.gh.owner || !state.gh.repo) { setGhStatus("Repo GitHub non configuré."); return; }
   if (!state.gh.token) { setGhStatus("Token GitHub manquant. Enregistrez-le dans la section Modération."); return; }
-  // upload images if not already uploaded
   for (let i = 0; i < item.images.length; i++) {
     const blob = item.images[i];
     const ext = (blob.type && blob.type.includes("jpeg")) ? "jpg" : (blob.type?.split("/")[1] || "png");
@@ -663,7 +641,6 @@ async function pushPendingToGitHub(item) {
     }
     item.images[i] = path;
   }
-  // update pending.json
   const pendMeta = (await ghGet("data/pending.json")) || {};
   const current = pendMeta.content ? JSON.parse(atob(pendMeta.content)) : [];
   const filtered = current.filter(p => p.id !== item.id);
@@ -674,18 +651,15 @@ async function pushPendingToGitHub(item) {
 }
 async function appendApprovedToGitHub(approved, sourcePending) {
   if (!state.gh.owner || !state.gh.repo || !state.gh.token) return;
-  // ensure images referenced as paths
   const images = (sourcePending.images || []).map((img, i) => {
     if (typeof img === "string") return img;
     return `data/images/pending/${sourcePending.id}_${i}.png`;
   });
   const approvedEntry = { ...approved, images };
-  // products.json
   const prodMeta = (await ghGet("data/products.json")) || {};
   const current = prodMeta.content ? JSON.parse(atob(prodMeta.content)) : [];
   current.unshift(approvedEntry);
   await ghPut("data/products.json", btoa(JSON.stringify(current, null, 2)), `approve: ${approved.id}`, prodMeta.sha);
-  // pending.json removal
   const pendMeta = (await ghGet("data/pending.json")) || {};
   if (pendMeta.content) {
     const list = JSON.parse(atob(pendMeta.content)).filter(p => p.id !== sourcePending.id);
@@ -713,7 +687,6 @@ async function loadImageFromPath(path) {
   return blob;
 }
 
-// --- Simple token obfuscation helpers ---
 function obfuscateToken(t) {
   try { return btoa(t).split("").reverse().join(""); } catch { return ""; }
 }
