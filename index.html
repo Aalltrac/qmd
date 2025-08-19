@@ -1,0 +1,144 @@
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>QMD — Qualité de Mes Denrées</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "idb-keyval": "https://esm.sh/idb-keyval@6.2.1"
+    }
+  }
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <img src="/CE8202C0-9156-4B9E-B217-F477251A6BC0_1.jpg" alt="Logo QMD" class="logo">
+      <div>
+        <h1>QMD</h1>
+        <p class="tagline">Est-ce que c’est bon ou mauvais ?</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <button class="nav-btn" data-tab="discover" aria-current="page">Découvrir</button>
+      <button class="nav-btn" data-tab="submit">Soumettre un produit</button>
+      <button class="nav-btn" data-tab="moderate">Modération</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Discover -->
+    <section id="tab-discover" class="tab active" aria-labelledby="Découvrir">
+      <div class="toolbar">
+        <input id="search" type="search" placeholder="Rechercher un produit ou une marque..." aria-label="Recherche" />
+        <div class="filters">
+          <label class="score-filter">
+            Note min:
+            <input id="minScore" type="range" min="0" max="100" value="0" />
+            <span id="minScoreVal">0</span>
+          </label>
+        </div>
+      </div>
+      <div id="productsGrid" class="grid" aria-live="polite"></div>
+      <p id="noProducts" class="empty hidden">Aucun produit trouvé.</p>
+    </section>
+
+    <!-- Submit -->
+    <section id="tab-submit" class="tab" aria-labelledby="Soumettre un produit">
+      <h2>Proposer un produit</h2>
+      <p class="muted">Vous pouvez proposer un produit non référencé. Nous vérifierons et compléterons les informations.</p>
+      <form id="submitForm" novalidate>
+        <div class="form-row">
+          <label for="productName">Nom du produit</label>
+          <input id="productName" name="productName" type="text" required placeholder="Ex: Céréales croustillantes nature" />
+          <span class="error" data-for="productName"></span>
+        </div>
+        <div class="form-row">
+          <label for="brandName">Marque</label>
+          <input id="brandName" name="brandName" type="text" required placeholder="Ex: QMD Foods" />
+          <span class="error" data-for="brandName"></span>
+        </div>
+        <div class="form-row">
+          <label for="productImages">Images du produit (min. 3)</label>
+          <input id="productImages" name="productImages" type="file" accept="image/*" multiple required />
+          <span class="hint">Ajoutez des photos du packaging, ingrédients, valeurs nutritionnelles.</span>
+          <span class="error" data-for="productImages"></span>
+        </div>
+        <div id="imagePreview" class="preview"></div>
+        <div class="form-actions">
+          <button type="submit" class="primary">Soumettre</button>
+          <button type="reset" class="ghost">Réinitialiser</button>
+        </div>
+        <p id="submitSuccess" class="success hidden">Merci ! Votre produit a été soumis et apparaît dans la file de modération.</p>
+      </form>
+    </section>
+
+    <!-- Moderate -->
+    <section id="tab-moderate" class="tab" aria-labelledby="Modération">
+      <div id="modGate" class="mod-gate">
+        <p>Section réservée à la modération.</p>
+        <label for="modPass">Mot de passe</label>
+        <input id="modPass" type="password" placeholder="Entrer le mot de passe" />
+        <button id="modEnter" class="primary">Entrer</button>
+        <p class="muted tiny">Astuce: par défaut "qmd2025". À changer dans app.js si besoin.</p>
+      </div>
+      <div id="modPanel" class="hidden">
+        <h2>File d’attente</h2>
+        <div id="pendingList" class="list"></div>
+        <p id="noPending" class="empty hidden">Aucune proposition en attente.</p>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="editorDialog" class="editor">
+    <form method="dialog" id="editorForm">
+      <h3>Valider et compléter le produit</h3>
+      <div class="editor-gallery" id="editorGallery"></div>
+      <div class="grid-2">
+        <div class="form-row">
+          <label>Nom</label>
+          <input id="edName" type="text" required />
+        </div>
+        <div class="form-row">
+          <label>Marque</label>
+          <input id="edBrand" type="text" required />
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Points positifs (un par ligne)</label>
+        <textarea id="edPositives" rows="3" placeholder="Ex: Riche en fibres"></textarea>
+      </div>
+      <div class="form-row">
+        <label>Points négatifs (un par ligne)</label>
+        <textarea id="edNegatives" rows="3" placeholder="Ex: Teneur en sucre élevée"></textarea>
+      </div>
+      <div class="form-row">
+        <label>Conseils de consommation</label>
+        <textarea id="edAdvice" rows="3" placeholder="Ex: À consommer au petit-déjeuner avec une source de protéines."></textarea>
+      </div>
+      <div class="form-row">
+        <label>Note santé (0 à 100)</label>
+        <input id="edScore" type="number" min="0" max="100" value="50" />
+      </div>
+      <menu class="dialog-actions">
+        <button value="cancel" class="ghost">Annuler</button>
+        <button id="approveBtn" value="default" class="primary">Approuver</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; <span id="year"></span> QMD</span>
+      <span class="sep">•</span>
+      <a href="#" class="muted link">Mentions légales</a>
+    </div>
+  </footer>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
