@@ -257,7 +257,7 @@ function productCard(p) {
   const ensured = base.length >= 3 ? base : [...base, ...base].slice(0, Math.max(3, base.length));
   ensured.forEach((blob, i) => {
     const img = document.createElement("img");
-    img.src = URL.createObjectURL(blob);
+    img.src = URL.createObjectURL(blob); img.loading = "lazy";
     img.alt = `${p.name} - image ${i+1}`;
     img.className = i === 0 ? "active" : "";
     car.appendChild(img);
@@ -272,29 +272,37 @@ function productCard(p) {
   next.textContent = "›";
   const dots = document.createElement("div");
   dots.className = "dots";
-  p.images.forEach((_, i) => {
-    const d = document.createElement("span");
+  ensured.forEach((_, i) => {
+    const d = document.createElement("button");
+    d.type = "button";
     d.className = "dot" + (i === 0 ? " active" : "");
+    d.addEventListener("click", () => goTo(i));
     dots.appendChild(d);
   });
   const updateDots = () => dots.querySelectorAll(".dot").forEach((d,i)=>d.classList.toggle("active", i===idx));
-  const go = (d) => {
-    const arr = [...car.querySelectorAll("img")];
-    if (arr.length === 0) return;
-    arr[idx].classList.remove("active");
-    idx = (idx + d + arr.length) % arr.length;
-    arr[idx].classList.add("active");
-    updateDots();
-  };
+  const goTo = (i) => { const arr=[...car.querySelectorAll("img")]; if(!arr.length) return; arr[idx].classList.remove("active"); idx=i%arr.length; arr[idx].classList.add("active"); updateDots(); };
+  const go = (d) => { const arr=[...car.querySelectorAll("img")]; if(!arr.length) return; goTo((idx + d + arr.length) % arr.length); };
   prev.addEventListener("click", () => go(-1));
   next.addEventListener("click", () => go(1));
-
+  // append carousel and controls to media (fix display)
   media.appendChild(car);
-  if (ensured.length > 1) {
-    media.appendChild(prev);
-    media.appendChild(next);
-    media.appendChild(dots);
-  }
+  media.appendChild(prev);
+  media.appendChild(next);
+  media.appendChild(dots);
+  // autoplay + pause when off-screen
+  let timerId=null, playing=false;
+  const startAuto=()=>{ if(playing) return; playing=true; timerId=setInterval(()=>go(1), 3500); };
+  const stopAuto=()=>{ playing=false; if(timerId) clearInterval(timerId); timerId=null; };
+  const io=new IntersectionObserver((ents)=>ents.forEach(e=>e.isIntersecting?startAuto():stopAuto()),{threshold:.5});
+  io.observe(media);
+  // swipe (pointer)
+  let sx=0, dx=0, down=false;
+  media.addEventListener("pointerdown",(e)=>{ down=true; sx=e.clientX; dx=0; media.setPointerCapture(e.pointerId); });
+  media.addEventListener("pointermove",(e)=>{ if(!down) return; dx=e.clientX-sx; });
+  media.addEventListener("pointerup",(e)=>{ if(!down) return; down=false; media.releasePointerCapture(e.pointerId); if(Math.abs(dx)>40) dx<0?go(1):go(-1); dx=0; });
+  // keyboard
+  media.tabIndex = 0;
+  media.addEventListener("keydown",(e)=>{ if(e.key==="ArrowLeft") go(-1); if(e.key==="ArrowRight") go(1); });
 
   const body = document.createElement("div");
   body.className = "card-body";

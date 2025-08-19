@@ -42,12 +42,12 @@ main { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
 .carousel { width: 100%; height: 100%; position: relative; }
 .carousel img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; opacity: 0; transition: opacity .25s ease; }
 .carousel img.active { opacity: 1; }
-.carousel .ctrl { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.9); border: 1px solid var(--border); width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; }
+.carousel .ctrl { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.95); border: 1px solid var(--border); width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; }
 .carousel .prev { left: 8px; }
 .carousel .next { right: 8px; }
 .carousel .dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; }
-.carousel .dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(0,0,0,0.15); }
-.carousel .dot.active { background: rgb(0 0 0 / .45); box-shadow: 0 0 0 2px rgb(255 255 255 / .8); }
+.carousel .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(0,0,0,0.18); }
+.carousel .dot.active { background: var(--grad); box-shadow: 0 0 0 2px rgb(255 255 255 / .9); }
 
 .card-body { padding: 12px; display: grid; gap: 8px; }
 .brandline { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
@@ -77,7 +77,7 @@ h2 { margin-top: 0; }
 .preview .thumb img { width: 100%; height: 100%; object-fit: cover; }
 
 .form-actions { display: flex; gap: 8px; margin-top: 12px; }
-button.primary { background: var(--text); color: #fff; border: none; padding: 10px 14px; border-radius: 10px; cursor: pointer; transition: transform .1s ease, opacity .2s ease; }
+button.primary { background: var(--grad); color: #fff; border: none; padding: 10px 14px; border-radius: 10px; cursor: pointer; transition: transform .1s ease, opacity .2s ease; }
 button.primary:hover { transform: translateY(-1px); }
 button.ghost { background: #f6f6f6; border: 1px solid var(--border); padding: 10px 14px; border-radius: 10px; cursor: pointer; }
 
