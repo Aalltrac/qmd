@@ -1,15 +1,1 @@
-[
-  {
-    "id": "16f31d2d-9cb6-4b07-8881-3aad743b5ee1",
-    "name": "test",
-    "brand": "test",
-    "images": [
-      "data/images/pending/16f31d2d-9cb6-4b07-8881-3aad743b5ee1_0.jpg",
-      "data/images/pending/16f31d2d-9cb6-4b07-8881-3aad743b5ee1_1.png",
-      "data/images/pending/16f31d2d-9cb6-4b07-8881-3aad743b5ee1_2.png",
-      "data/images/pending/16f31d2d-9cb6-4b07-8881-3aad743b5ee1_3.png"
-    ],
-    "submittedAt": 1755640150478,
-    "status": "pending"
-  }
-]
+[]
