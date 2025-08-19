@@ -4,8 +4,8 @@ const KEYS = {
   PRODUCTS: "qmd_products_v1", // approved
   PENDING: "qmd_pending_v1",   // submissions
   FIRST_RUN: "qmd_first_run_v1",
+  GH_CFG: "qmd_gh_cfg_v1",
 };
-const ADMIN_PASS = "qmd2025";
 
 const els = {
   tabs: {
@@ -40,6 +40,14 @@ const els = {
   edScore: document.getElementById("edScore"),
   editorGallery: document.getElementById("editorGallery"),
   approveBtn: document.getElementById("approveBtn"),
+  // GitHub settings
+  ghOwner: document.getElementById("ghOwner"),
+  ghRepo: document.getElementById("ghRepo"),
+  ghBranch: document.getElementById("ghBranch"),
+  ghToken: document.getElementById("ghToken"),
+  saveGh: document.getElementById("saveGh"),
+  syncGh: document.getElementById("syncGh"),
+  ghStatus: document.getElementById("ghStatus"),
 };
 
 let state = {
@@ -47,6 +55,7 @@ let state = {
   pending: [],
   admin: false,
   editingId: null,
+  gh: { owner: "Aalltrac", repo: "qmd", branch: "main", token: "" },
 };
 
 init();
@@ -61,6 +70,13 @@ async function init() {
     await set(KEYS.PRODUCTS, demo.approved);
     await set(KEYS.PENDING, demo.pending);
     await set(KEYS.FIRST_RUN, true);
+  }
+
+  const savedGh = (await get(KEYS.GH_CFG)) || null;
+  if (savedGh) {
+    state.gh = { ...state.gh, ...savedGh, token: savedGh.token || "" };
+    applyGhToUI();
+    await trySyncFromGitHub();
   }
 
   state.products = (await get(KEYS.PRODUCTS)) || [];
@@ -105,6 +121,7 @@ function bindUI() {
     } else {
       alert("Mot de passe incorrect.");
     }
+    if (state.admin) applyGhToUI();
   });
 
   // Editor approve
@@ -114,6 +131,18 @@ function bindUI() {
     els.editor.setAttribute("open", "");
     els.editor.classList.add("hidden");
   }
+
+  els.saveGh.addEventListener("click", async () => {
+    readGhFromUI();
+    await set(KEYS.GH_CFG, { ...state.gh });
+    setGhStatus("Configuration enregistrée.");
+  });
+  els.syncGh.addEventListener("click", async () => {
+    readGhFromUI();
+    await set(KEYS.GH_CFG, { ...state.gh });
+    await syncToGitHub();
+    await trySyncFromGitHub();
+  });
 }
 
 function showTab(tab) {
@@ -156,7 +185,6 @@ async function handleSubmitForm(e) {
   if (!ok) return;
 
   const images = await Promise.all(files.map(f => f.arrayBuffer().then(buf => new Blob([buf], { type: f.type }))));
-
   const pendingItem = {
     id: crypto.randomUUID(),
     name, brand,
@@ -167,7 +195,8 @@ async function handleSubmitForm(e) {
 
   state.pending.unshift(pendingItem);
   await set(KEYS.PENDING, state.pending);
-
+  // Try remote sync for this item
+  await pushPendingToGitHub(pendingItem).catch(()=>{});
   els.submitForm.reset();
   els.imagePreview.innerHTML = "";
   els.submitSuccess.classList.remove("hidden");
@@ -223,13 +252,21 @@ function productCard(p) {
   next.className = "ctrl next";
   next.setAttribute("aria-label", "Image suivante");
   next.textContent = "›";
-  const imgs = () => [...car.querySelectorAll("img")];
+  const dots = document.createElement("div");
+  dots.className = "dots";
+  p.images.forEach((_, i) => {
+    const d = document.createElement("span");
+    d.className = "dot" + (i === 0 ? " active" : "");
+    dots.appendChild(d);
+  });
+  const updateDots = () => dots.querySelectorAll(".dot").forEach((d,i)=>d.classList.toggle("active", i===idx));
   const go = (d) => {
-    const arr = imgs();
+    const arr = [...car.querySelectorAll("img")];
     if (arr.length === 0) return;
     arr[idx].classList.remove("active");
     idx = (idx + d + arr.length) % arr.length;
     arr[idx].classList.add("active");
+    updateDots();
   };
   prev.addEventListener("click", () => go(-1));
   next.addEventListener("click", () => go(1));
@@ -238,6 +275,7 @@ function productCard(p) {
   if ((p.images || []).length > 1) {
     media.appendChild(prev);
     media.appendChild(next);
+    media.appendChild(dots);
   }
 
   const body = document.createElement("div");
@@ -414,7 +452,8 @@ async function approveEditing(e) {
 
   await set(KEYS.PRODUCTS, state.products);
   await set(KEYS.PENDING, state.pending);
-
+  // Remote sync: append to products.json (images already uploaded in pending path)
+  await appendApprovedToGitHub(approved, item).catch(()=>{});
   if (els.editor.close) els.editor.close(); else els.editor.classList.add("hidden");
   state.editingId = null;
 
@@ -481,3 +520,164 @@ async function seedData() {
   return { approved, pending };
 }
 
+// ---- GitHub Sync ----
+function applyGhToUI() {
+  els.ghOwner.value = state.gh.owner || "";
+  els.ghRepo.value = state.gh.repo || "";
+  els.ghBranch.value = state.gh.branch || "main";
+  els.ghToken.value = state.gh.token || "";
+}
+function readGhFromUI() {
+  state.gh.owner = (els.ghOwner.value || "").trim();
+  state.gh.repo = (els.ghRepo.value || "").trim();
+  state.gh.branch = (els.ghBranch.value || "main").trim();
+  state.gh.token = els.ghToken.value.trim();
+}
+function setGhStatus(msg) {
+  els.ghStatus.textContent = msg;
+}
+function ghHeaders(json=true) {
+  const h = { Accept: "application/vnd.github+json" };
+  if (state.gh.token) h.Authorization = "Bearer " + state.gh.token;
+  if (json) h["Content-Type"] = "application/json";
+  return h;
+}
+function ghBase() {
+  const { owner, repo } = state.gh;
+  if (!owner || !repo) throw new Error("GitHub repo non configuré.");
+  return `https://api.github.com/repos/${owner}/${repo}/contents`;
+}
+async function ghGet(path) {
+  const url = `${ghBase()}/${encodeURIComponent(path)}`.replace(/%2F/g,'/');
+  const res = await fetch(url + `?ref=${encodeURIComponent(state.gh.branch)}`, { headers: ghHeaders(false) });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error("GitHub GET échec");
+  return res.json();
+}
+async function ghPut(path, contentBase64, message, sha) {
+  const url = `${ghBase()}/${encodeURIComponent(path)}`.replace(/%2F/g,'/');
+  const body = { message, content: contentBase64, branch: state.gh.branch };
+  if (sha) body.sha = sha;
+  const res = await fetch(url, { method: "PUT", headers: ghHeaders(), body: JSON.stringify(body) });
+  if (!res.ok) throw new Error("GitHub PUT échec");
+  return res.json();
+}
+function b64FromBlob(blob) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => {
+      const b64 = btoa(String.fromCharCode(...new Uint8Array(r.result)));
+      resolve(b64);
+    };
+    r.onerror = reject;
+    r.readAsArrayBuffer(blob);
+  });
+}
+async function trySyncFromGitHub() {
+  try {
+    const prod = await ghGet("data/products.json");
+    const pend = await ghGet("data/pending.json");
+    if (prod?.content) {
+      const arr = JSON.parse(atob(prod.content));
+      const withImgs = await fetchProductsImages(arr);
+      state.products = withImgs;
+      await set(KEYS.PRODUCTS, state.products);
+      renderDiscover();
+    }
+    if (pend?.content) {
+      const arr = JSON.parse(atob(pend.content));
+      const withImgs = await fetchPendingImages(arr);
+      state.pending = withImgs;
+      await set(KEYS.PENDING, state.pending);
+      renderPending();
+    }
+    setGhStatus("Synchronisation distante terminée.");
+  } catch (e) {
+    setGhStatus("Impossible de lire le dépôt (vérifiez config/permissions).");
+  }
+}
+async function syncToGitHub() {
+  // push local state to remote JSON (no image upload here)
+  try {
+    const prodMeta = (await ghGet("data/products.json")) || {};
+    const pendMeta = (await ghGet("data/pending.json")) || {};
+    const prodB64 = btoa(JSON.stringify(state.products.map(stripBlobsToPaths), null, 2));
+    const pendB64 = btoa(JSON.stringify(state.pending.map(stripBlobsToPaths), null, 2));
+    await ghPut("data/products.json", prodB64, "sync: products.json", prodMeta.sha);
+    await ghPut("data/pending.json", pendB64, "sync: pending.json", pendMeta.sha);
+    setGhStatus("Synchronisation des métadonnées effectuée.");
+  } catch {
+    setGhStatus("Échec de la synchronisation des métadonnées.");
+  }
+}
+function stripBlobsToPaths(item) {
+  return {
+    ...item,
+    images: item.images.map((img, i) =>
+      typeof img === "string" ? img : (img.path || `data/images/pending/${item.id}_${i}.png`)
+    ),
+  };
+}
+async function pushPendingToGitHub(item) {
+  if (!state.gh.owner || !state.gh.repo || !state.gh.token) return;
+  // upload images if not already uploaded
+  for (let i = 0; i < item.images.length; i++) {
+    const blob = item.images[i];
+    const ext = (blob.type && blob.type.includes("jpeg")) ? "jpg" : (blob.type?.split("/")[1] || "png");
+    const path = `data/images/pending/${item.id}_${i}.${ext}`;
+    const exists = await ghGet(path);
+    if (!exists) {
+      const b64 = await b64FromBlob(blob);
+      await ghPut(path, b64, `pending: image ${item.id} #${i}`);
+    }
+    item.images[i] = path;
+  }
+  // update pending.json
+  const pendMeta = (await ghGet("data/pending.json")) || {};
+  const current = pendMeta.content ? JSON.parse(atob(pendMeta.content)) : [];
+  const filtered = current.filter(p => p.id !== item.id);
+  filtered.unshift({ ...item, status: "pending" });
+  const b64 = btoa(JSON.stringify(filtered, null, 2));
+  await ghPut("data/pending.json", b64, `pending: add ${item.id}`, pendMeta.sha);
+  await set(KEYS.PENDING, filtered);
+}
+async function appendApprovedToGitHub(approved, sourcePending) {
+  if (!state.gh.owner || !state.gh.repo || !state.gh.token) return;
+  // ensure images referenced as paths
+  const images = (sourcePending.images || []).map((img, i) => {
+    if (typeof img === "string") return img;
+    return `data/images/pending/${sourcePending.id}_${i}.png`;
+  });
+  const approvedEntry = { ...approved, images };
+  // products.json
+  const prodMeta = (await ghGet("data/products.json")) || {};
+  const current = prodMeta.content ? JSON.parse(atob(prodMeta.content)) : [];
+  current.unshift(approvedEntry);
+  await ghPut("data/products.json", btoa(JSON.stringify(current, null, 2)), `approve: ${approved.id}`, prodMeta.sha);
+  // pending.json removal
+  const pendMeta = (await ghGet("data/pending.json")) || {};
+  if (pendMeta.content) {
+    const list = JSON.parse(atob(pendMeta.content)).filter(p => p.id !== sourcePending.id);
+    await ghPut("data/pending.json", btoa(JSON.stringify(list, null, 2)), `pending: remove ${sourcePending.id}`, pendMeta.sha);
+  }
+}
+async function fetchProductsImages(list) {
+  return Promise.all(list.map(async p => ({
+    ...p,
+    images: await Promise.all((p.images || []).map(loadImageFromPath)),
+  })));
+}
+async function fetchPendingImages(list) {
+  return Promise.all(list.map(async p => ({
+    ...p,
+    images: await Promise.all((p.images || []).map(loadImageFromPath)),
+  })));
+}
+async function loadImageFromPath(path) {
+  if (!path || typeof path !== "string") return new Blob();
+  const rawBase = `https://raw.githubusercontent.com/${state.gh.owner}/${state.gh.repo}/${encodeURIComponent(state.gh.branch)}/${path}`;
+  const res = await fetch(rawBase, state.gh.token ? { headers: { Authorization: "Bearer " + state.gh.token } } : undefined);
+  if (!res.ok) return new Blob();
+  const blob = await res.blob();
+  return blob;
+}

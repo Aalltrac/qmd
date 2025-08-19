@@ -90,6 +90,33 @@
         <h2>File d’attente</h2>
         <div id="pendingList" class="list"></div>
         <p id="noPending" class="empty hidden">Aucune proposition en attente.</p>
+        <div class="settings">
+          <h3>Synchronisation GitHub</h3>
+          <div class="grid-3">
+            <div class="form-row">
+              <label for="ghOwner">Owner</label>
+              <input id="ghOwner" type="text" placeholder="Ex: Aalltrac" />
+            </div>
+            <div class="form-row">
+              <label for="ghRepo">Repo</label>
+              <input id="ghRepo" type="text" placeholder="Ex: qmd" />
+            </div>
+            <div class="form-row">
+              <label for="ghBranch">Branche</label>
+              <input id="ghBranch" type="text" placeholder="main" value="main" />
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="ghToken">Token (stocké localement, jamais envoyé ailleurs)</label>
+            <input id="ghToken" type="password" placeholder="ghp_..." autocomplete="off" />
+            <span class="hint">Conseil: utilisez un token avec droits limités au repo.</span>
+          </div>
+          <div class="form-actions">
+            <button id="saveGh" class="ghost">Enregistrer</button>
+            <button id="syncGh" class="primary">Synchroniser maintenant</button>
+          </div>
+          <p id="ghStatus" class="muted tiny"></p>
+        </div>
       </div>
     </section>
   </main>
