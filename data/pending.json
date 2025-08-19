@@ -1,0 +1,15 @@
+[
+  {
+    "id": "f783d4a8-994f-4985-9bef-3af17e79c2a4",
+    "name": "test",
+    "brand": "test",
+    "images": [
+      "data/images/pending/f783d4a8-994f-4985-9bef-3af17e79c2a4_0.jpg",
+      "data/images/pending/f783d4a8-994f-4985-9bef-3af17e79c2a4_1.png",
+      "data/images/pending/f783d4a8-994f-4985-9bef-3af17e79c2a4_2.png",
+      "data/images/pending/f783d4a8-994f-4985-9bef-3af17e79c2a4_3.png"
+    ],
+    "submittedAt": 1755626005034,
+    "status": "pending"
+  }
+]
