@@ -38,7 +38,6 @@ export function bindUI() {
     els.editor.classList.add("hidden");
   }
 
-  // Donate dialog
   els.donateBtn?.addEventListener("click", () => {
     if (els.donateDialog?.showModal) els.donateDialog.showModal();
     else els.donateDialog?.classList.remove("hidden");
