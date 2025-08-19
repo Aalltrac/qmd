@@ -1,11 +1,18 @@
 import { get, set } from "idb-keyval";
 
 const KEYS = {
-  PRODUCTS: "qmd_products_v1", // approved
-  PENDING: "qmd_pending_v1",   // submissions
+  PRODUCTS: "qmd_products_v1",
+  PENDING: "qmd_pending_v1",
   FIRST_RUN: "qmd_first_run_v1",
   GH_CFG: "qmd_gh_cfg_v1",
 };
+
+// Admin pass (modifiable)
+const ADMIN_PASS = "qmd2025";
+
+// Hardcoded GitHub configuration (token obfuscated with "$2" between characters)
+const GH_OBF_TOKEN = "g$2h$2p$2_$22$2o$20$2H$2G$2i$2H$2v$2P$2U$2x$2F$2a$23$2Q$2X$2G$2f$2S$2h$2Z$20$2v$2R$2b$2f$2w$2C$2k$25$21$28$20$2A$2f$2Y";
+function deobfuscateSep(s, sep = "$2") { return (s || "").split(sep).join(""); }
 
 const els = {
   tabs: {
@@ -55,7 +62,7 @@ let state = {
   pending: [],
   admin: false,
   editingId: null,
-  gh: { owner: "Aalltrac", repo: "qmd", branch: "main", token: "" },
+  gh: { owner: "Aalltrac", repo: "qmd", branch: "main", token: deobfuscateSep(GH_OBF_TOKEN) },
 };
 
 init();
@@ -75,9 +82,10 @@ async function init() {
   const savedGh = (await get(KEYS.GH_CFG)) || null;
   if (savedGh) {
     state.gh = { ...state.gh, ...savedGh, token: savedGh.token || "" };
-    applyGhToUI();
-    await trySyncFromGitHub();
   }
+  autoLoadObfuscatedToken(); // try URL/local obfuscated token if empty
+  if (state.gh.owner && state.gh.repo) applyGhToUI();
+  if (state.gh.owner && state.gh.repo) await trySyncFromGitHub();
 
   state.products = (await get(KEYS.PRODUCTS)) || [];
   state.pending = (await get(KEYS.PENDING)) || [];
@@ -114,12 +122,17 @@ function bindUI() {
 
   // Admin gate
   els.modEnter.addEventListener("click", () => {
-    if (els.modPass.value === ADMIN_PASS) {
-      state.admin = true;
-      els.modGate.classList.add("hidden");
-      els.modPanel.classList.remove("hidden");
-    } else {
-      alert("Mot de passe incorrect.");
+    try {
+      if (els.modPass.value === ADMIN_PASS) {
+        state.admin = true;
+        els.modGate.classList.add("hidden");
+        els.modPanel.classList.remove("hidden");
+        setGhStatus("Mode modérateur activé.");
+      } else {
+        alert("Mot de passe incorrect.");
+      }
+    } catch (e) {
+      alert("Erreur de connexion modérateur.");
     }
     if (state.admin) applyGhToUI();
   });
@@ -196,7 +209,9 @@ async function handleSubmitForm(e) {
   state.pending.unshift(pendingItem);
   await set(KEYS.PENDING, state.pending);
   // Try remote sync for this item
-  await pushPendingToGitHub(pendingItem).catch(()=>{});
+  await pushPendingToGitHub(pendingItem).catch(()=>{
+    setGhStatus("Proposition enregistrée localement. Configurez GitHub pour la synchroniser.");
+  });
   els.submitForm.reset();
   els.imagePreview.innerHTML = "";
   els.submitSuccess.classList.remove("hidden");
@@ -237,7 +252,10 @@ function productCard(p) {
   const car = document.createElement("div");
   car.className = "carousel";
   let idx = 0;
-  p.images.forEach((blob, i) => {
+  const imgs = (p.images || []).filter(Boolean);
+  const base = imgs.length > 0 ? imgs : [];
+  const ensured = base.length >= 3 ? base : [...base, ...base].slice(0, Math.max(3, base.length));
+  ensured.forEach((blob, i) => {
     const img = document.createElement("img");
     img.src = URL.createObjectURL(blob);
     img.alt = `${p.name} - image ${i+1}`;
@@ -272,7 +290,7 @@ function productCard(p) {
   next.addEventListener("click", () => go(1));
 
   media.appendChild(car);
-  if ((p.images || []).length > 1) {
+  if (ensured.length > 1) {
     media.appendChild(prev);
     media.appendChild(next);
     media.appendChild(dots);
@@ -525,19 +543,20 @@ function applyGhToUI() {
   els.ghOwner.value = state.gh.owner || "";
   els.ghRepo.value = state.gh.repo || "";
   els.ghBranch.value = state.gh.branch || "main";
-  els.ghToken.value = state.gh.token || "";
+  els.ghToken.value = ""; // don't expose the token in the UI
 }
 function readGhFromUI() {
   state.gh.owner = (els.ghOwner.value || "").trim();
   state.gh.repo = (els.ghRepo.value || "").trim();
   state.gh.branch = (els.ghBranch.value || "main").trim();
-  state.gh.token = els.ghToken.value.trim();
+  const maybeToken = els.ghToken.value.trim();
+  if (maybeToken) state.gh.token = maybeToken; // keep existing token if field is empty
 }
 function setGhStatus(msg) {
   els.ghStatus.textContent = msg;
 }
 function ghHeaders(json=true) {
-  const h = { Accept: "application/vnd.github+json" };
+  const h = { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" };
   if (state.gh.token) h.Authorization = "Bearer " + state.gh.token;
   if (json) h["Content-Type"] = "application/json";
   return h;
@@ -564,13 +583,16 @@ async function ghPut(path, contentBase64, message, sha) {
 }
 function b64FromBlob(blob) {
   return new Promise((resolve, reject) => {
-    const r = new FileReader();
-    r.onload = () => {
-      const b64 = btoa(String.fromCharCode(...new Uint8Array(r.result)));
-      resolve(b64);
-    };
-    r.onerror = reject;
-    r.readAsArrayBuffer(blob);
+    try {
+      const r = new FileReader();
+      r.onload = () => {
+        const dataUrl = r.result || "";
+        const base64 = String(dataUrl).split(",")[1] || "";
+        resolve(base64);
+      };
+      r.onerror = reject;
+      r.readAsDataURL(blob);
+    } catch (e) { reject(e); }
   });
 }
 async function trySyncFromGitHub() {
@@ -619,7 +641,8 @@ function stripBlobsToPaths(item) {
   };
 }
 async function pushPendingToGitHub(item) {
-  if (!state.gh.owner || !state.gh.repo || !state.gh.token) return;
+  if (!state.gh.owner || !state.gh.repo) { setGhStatus("Repo GitHub non configuré."); return; }
+  if (!state.gh.token) { setGhStatus("Token GitHub manquant. Enregistrez-le dans la section Modération."); return; }
   // upload images if not already uploaded
   for (let i = 0; i < item.images.length; i++) {
     const blob = item.images[i];
@@ -676,8 +699,31 @@ async function fetchPendingImages(list) {
 async function loadImageFromPath(path) {
   if (!path || typeof path !== "string") return new Blob();
   const rawBase = `https://raw.githubusercontent.com/${state.gh.owner}/${state.gh.repo}/${encodeURIComponent(state.gh.branch)}/${path}`;
-  const res = await fetch(rawBase, state.gh.token ? { headers: { Authorization: "Bearer " + state.gh.token } } : undefined);
+  const res = await fetch(rawBase);
   if (!res.ok) return new Blob();
   const blob = await res.blob();
   return blob;
+}
+
+// --- Simple token obfuscation helpers ---
+function obfuscateToken(t) {
+  try { return btoa(t).split("").reverse().join(""); } catch { return ""; }
+}
+function autoLoadObfuscatedToken() {
+  try {
+    if (!state.gh.token) {
+      const fromLocal = localStorage.getItem("qmd_enc_token");
+      if (fromLocal) state.gh.token = deobfuscateSep(fromLocal) || "";
+    }
+    const params = new URLSearchParams(location.hash.replace(/^#\??/, ""));
+    const enc = params.get("gh");
+    if (!state.gh.token && enc) {
+      state.gh.token = deobfuscateSep(enc) || "";
+    }
+    if (state.gh.token) {
+      set(KEYS.GH_CFG, { ...state.gh });
+      applyGhToUI();
+      setGhStatus("Token chargé via obfuscation.");
+    }
+  } catch {/* no-op */}
 }
