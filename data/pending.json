@@ -1,1 +1,15 @@
-[]
+[
+  {
+    "id": "a004c17e-6e60-4658-8f75-82c8467caf43",
+    "name": "fefs",
+    "brand": "egsgseg",
+    "images": [
+      "data/images/pending/a004c17e-6e60-4658-8f75-82c8467caf43_0.jpg",
+      "data/images/pending/a004c17e-6e60-4658-8f75-82c8467caf43_1.png",
+      "data/images/pending/a004c17e-6e60-4658-8f75-82c8467caf43_2.png",
+      "data/images/pending/a004c17e-6e60-4658-8f75-82c8467caf43_3.png"
+    ],
+    "submittedAt": 1755688214616,
+    "status": "pending"
+  }
+]
