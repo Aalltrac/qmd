@@ -9,10 +9,8 @@
   --shadow: 0 10px 30px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
 }
 
-/* Smoother text rendering */
 html, body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 
-/* Logo: subtle gradient ring to echo the brand */
 .logo {
   padding: 2px;
   background: radial-gradient(120% 120% at 0% 100%, rgba(255,145,83,.25), transparent 40%),
@@ -21,7 +19,6 @@ html, body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grays
   border: 1px solid #eee;
 }
 
-/* Nav buttons: clearer active state with brand underline */
 .nav-btn[aria-current="page"]::after {
   height: 4px;
   bottom: -7px;
@@ -30,24 +27,20 @@ html, body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grays
 }
 .nav-btn[aria-current="page"] { color: var(--text); border-color: rgba(74,156,255,.35); }
 
-/* Inputs: brand focus ring */
 input:focus-visible, textarea:focus-visible {
   outline: 2px solid transparent;
   box-shadow: 0 0 0 3px rgba(255,106,123,.25), 0 0 0 1px #fff inset;
 }
 
-/* Primary buttons: refined gradient + hover lift */
 button.primary {
   background: var(--grad);
   box-shadow: 0 6px 16px rgba(255,106,123,.22), 0 2px 8px rgba(74,156,255,.12);
 }
 button.primary:hover { transform: translateY(-2px); }
 
-/* Cards: gentle border tint + hover glow */
 .card { border: 1px solid rgba(74,156,255,.18); background: linear-gradient(180deg,#fff, #fbfcff); transition: box-shadow .2s ease, transform .12s ease, border-color .2s ease; }
 .card:hover { border-color: rgba(74,156,255,.35); box-shadow: 0 18px 44px rgba(74,156,255,.12), 0 2px 10px rgba(0,0,0,.05); }
 
-/* Carousel controls: crisper, glassy look */
 .carousel .ctrl {
   width: 34px; height: 34px;
   background: rgba(255,255,255,.9);
@@ -56,14 +49,12 @@ button.primary:hover { transform: translateY(-2px); }
 }
 .carousel .ctrl:hover { background: #fff; }
 
-/* Carousel dots: brand active state */
 .carousel .dot { background: rgba(0,0,0,0.18); }
 .carousel .dot.active {
   background: linear-gradient(180deg, var(--brand-pink), var(--brand-orange));
   box-shadow: 0 0 0 2px rgb(255 255 255 / .9), 0 4px 10px rgba(0,0,0,.12);
 }
 
-/* Badges re-tuned to brand hues */
 .badge.good {
   background: linear-gradient(180deg, #e9f2ff, #f4f9ff);
   border-color: rgba(74,156,255,.45);
@@ -81,15 +72,12 @@ button.primary:hover { transform: translateY(-2px); }
 }
 .badge { box-shadow: inset 0 0 0 1px rgb(255 255 255 / .6); }
 
-/* Footer link hover: soft brand underline */
 .link:hover { color: var(--text); border-bottom-color: var(--brand-blue); }
 
-/* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
 
-/* Dark mode */
 @media (prefers-color-scheme: dark) {
   html { background:
     radial-gradient(80vw 40vh at 0% 0%, rgba(255,106,123,.06), transparent 60%),
