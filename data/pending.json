@@ -1,5 +1,17 @@
 [
   {
+    "id": "2da247b8-65f2-492c-b85e-311900b60e7e",
+    "name": "Nouilles instantanées aux crevettes halal",
+    "brand": "YUM YUM",
+    "images": [
+      "data/images/pending/2da247b8-65f2-492c-b85e-311900b60e7e_0.jpg",
+      "data/images/pending/2da247b8-65f2-492c-b85e-311900b60e7e_1.png",
+      "data/images/pending/2da247b8-65f2-492c-b85e-311900b60e7e_2.png"
+    ],
+    "submittedAt": 1755689200284,
+    "status": "pending"
+  },
+  {
     "id": "3a13cbf9-0c9f-4b18-b35b-212e31d48aac",
     "name": "Nouille curry",
     "brand": "YUM YUM",
