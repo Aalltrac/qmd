@@ -17,23 +17,19 @@ async function init() {
     await set(KEYS.FIRST_RUN, true);
   }
 
-  // Load persisted GH cfg, then attempt token auto-load
   const savedGh = (await get(KEYS.GH_CFG)) || null;
   if (savedGh) Object.assign(state.gh, savedGh, { token: savedGh.token || "" });
   autoLoadObfuscatedToken();
   applyGhToUI();
 
-  // Try pulling remote data (non-fatal)
   await trySyncFromGitHub().catch(() => {});
 
-  // Load local state for UI
   state.products = (await get(KEYS.PRODUCTS)) || [];
   state.pending = (await get(KEYS.PENDING)) || [];
 
   bindUI();
   renderDiscover();
   renderPending();
-  // Fallback for donate dialog on very old browsers
   if (!HTMLDialogElement.prototype.showModal && els.donateDialog) els.donateDialog.classList.add("hidden");
 }
 
