@@ -5,7 +5,7 @@
   --border: #e7e7e7;
   --shadow: 0 10px 30px rgba(0,0,0,0.08);
   --radius: 12px;
-  --accent: #ff5a5f; /* subtle nod to vibrant logo without overusing color */
+  --accent: #ff5a5f;
   --accent-2: #0077ff;
   --grad: linear-gradient(90deg, #ff6a7b 0%, #ff9153 50%, #4a9cff 100%);
 }
