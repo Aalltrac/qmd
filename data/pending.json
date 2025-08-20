@@ -1,5 +1,17 @@
 [
   {
+    "id": "3a13cbf9-0c9f-4b18-b35b-212e31d48aac",
+    "name": "Nouille curry",
+    "brand": "YUM YUM",
+    "images": [
+      "data/images/pending/3a13cbf9-0c9f-4b18-b35b-212e31d48aac_0.jpg",
+      "data/images/pending/3a13cbf9-0c9f-4b18-b35b-212e31d48aac_1.png",
+      "data/images/pending/3a13cbf9-0c9f-4b18-b35b-212e31d48aac_2.png"
+    ],
+    "submittedAt": 1755689016513,
+    "status": "pending"
+  },
+  {
     "id": "0e79054c-4caa-4003-99db-cff695f7c850",
     "name": "NOUILLES INSTANTANEES SAVEUR POULET 60G",
     "brand": "YUM YUM",
