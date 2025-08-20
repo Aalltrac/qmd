@@ -14,5 +14,5 @@ export function applyGhToUI() {
   els.ghOwner.value = state.gh.owner || "";
   els.ghRepo.value = state.gh.repo || "";
   els.ghBranch.value = state.gh.branch || "main";
-  if (els.ghToken) els.ghToken.value = "";
+  if (els.ghToken) els.ghToken.value = ""; // never reveal token
 }

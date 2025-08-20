@@ -31,6 +31,7 @@ export const els = {
   edScore: document.getElementById("edScore"),
   editorGallery: document.getElementById("editorGallery"),
   approveBtn: document.getElementById("approveBtn"),
+  // GitHub settings (shown after admin mode)
   ghOwner: document.getElementById("ghOwner"),
   ghRepo: document.getElementById("ghRepo"),
   ghBranch: document.getElementById("ghBranch"),
@@ -38,6 +39,7 @@ export const els = {
   saveGh: document.getElementById("saveGh"),
   syncGh: document.getElementById("syncGh"),
   ghStatus: document.getElementById("ghStatus"),
+  // Donate
   donateBtn: document.getElementById("donateBtn"),
   donateDialog: document.getElementById("donateDialog"),
 };
