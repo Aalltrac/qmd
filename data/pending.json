@@ -1,7 +1,19 @@
 [
   {
+    "id": "79364cd3-108d-4ece-a093-5f25ee8b04c1",
+    "name": "Buldak Ramen Cheese",
+    "brand": "Buldak",
+    "images": [
+      "data/images/pending/79364cd3-108d-4ece-a093-5f25ee8b04c1_0.png",
+      "data/images/pending/79364cd3-108d-4ece-a093-5f25ee8b04c1_1.png",
+      "data/images/pending/79364cd3-108d-4ece-a093-5f25ee8b04c1_2.png"
+    ],
+    "submittedAt": 1755689403643,
+    "status": "pending"
+  },
+  {
     "id": "2da247b8-65f2-492c-b85e-311900b60e7e",
-    "name": "Nouilles instantan�es aux crevettes halal",
+    "name": "Nouilles instantanées aux crevettes halal",
     "brand": "YUM YUM",
     "images": [
       "data/images/pending/2da247b8-65f2-492c-b85e-311900b60e7e_0.jpg",
@@ -37,7 +49,7 @@
   },
   {
     "id": "be53f191-f3d7-481b-a60b-5f61c0a9ae7e",
-    "name": "Goûters fourrés au chocolat",
+    "name": "GoÃ»ters fourrÃ©s au chocolat",
     "brand": "BN",
     "images": [
       "data/images/pending/be53f191-f3d7-481b-a60b-5f61c0a9ae7e_0.webp",
