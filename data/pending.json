@@ -1,5 +1,17 @@
 [
   {
+    "id": "be53f191-f3d7-481b-a60b-5f61c0a9ae7e",
+    "name": "Goûters fourrés au chocolat",
+    "brand": "BN",
+    "images": [
+      "data/images/pending/be53f191-f3d7-481b-a60b-5f61c0a9ae7e_0.webp",
+      "data/images/pending/be53f191-f3d7-481b-a60b-5f61c0a9ae7e_1.png",
+      "data/images/pending/be53f191-f3d7-481b-a60b-5f61c0a9ae7e_2.png"
+    ],
+    "submittedAt": 1755688225006,
+    "status": "pending"
+  },
+  {
     "id": "a004c17e-6e60-4658-8f75-82c8467caf43",
     "name": "fefs",
     "brand": "egsgseg",
