@@ -31,6 +31,18 @@ async function init() {
   renderDiscover();
   renderPending();
   if (!HTMLDialogElement.prototype.showModal && els.donateDialog) els.donateDialog.classList.add("hidden");
+
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const bg = document.querySelector(".bg-squares");
+    const onMove = (x=0,y=0) => {
+      const dx = Math.round((x - innerWidth/2) * 0.02);
+      const dy = Math.round((y - innerHeight/2) * 0.02);
+      bg?.style.setProperty("--bgx", dx + "px");
+      bg?.style.setProperty("--bgy", dy + "px");
+    };
+    window.addEventListener("mousemove", e => onMove(e.clientX, e.clientY), { passive: true });
+    window.addEventListener("scroll", () => onMove(innerWidth/2, innerHeight/2 - scrollY*0.15), { passive: true });
+  }
 }
 
 init();
