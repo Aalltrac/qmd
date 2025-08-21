@@ -26,6 +26,7 @@ export function bindUI() {
       state.admin = true;
       els.modGate.classList.add("hidden");
       els.modPanel.classList.remove("hidden");
+      renderPending();
     } else {
       alert("Mot de passe incorrect.");
     }
@@ -51,7 +52,13 @@ export function bindUI() {
       const old = btn.textContent;
       btn.textContent = "Copié !";
       setTimeout(() => (btn.textContent = old), 1200);
-    } catch {/* no-op */}
+    } catch {}
+  });
+
+  els.goDiscover?.addEventListener("click", () => {
+    showTab("discover");
+    document.getElementById("search")?.focus({ preventScroll: true });
+    document.getElementById("tab-discover")?.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
   els.saveGh?.addEventListener("click", async () => {
@@ -77,6 +84,10 @@ function readGhFromUI() {
 export function showTab(tab) {
   Object.entries(els.tabs).forEach(([k, el]) => el.classList.toggle("active", k === tab));
   els.navBtns.forEach(b => b.setAttribute("aria-current", b.dataset.tab === tab ? "page" : "false"));
+  if (tab === "moderate") {
+    els.modGate.classList.toggle("hidden", !!state.admin);
+    els.modPanel.classList.toggle("hidden", !state.admin);
+  }
 }
 
 function updateImagePreview() {
@@ -140,14 +151,8 @@ export function renderDiscover() {
   const list = state.products
     .filter(p => (!term || p.name.toLowerCase().includes(term) || p.brand.toLowerCase().includes(term)))
     .filter(p => (isFinite(min) ? (p.score ?? 0) >= min : true));
-
   els.productsGrid.innerHTML = "";
-  if (list.length === 0) {
-    els.noProducts.classList.remove("hidden");
-    return;
-  }
-  els.noProducts.classList.add("hidden");
-
+  if (list.length === 0) { return; }
   list.forEach(p => els.productsGrid.appendChild(productCard(p)));
 }
 
@@ -165,7 +170,9 @@ function productCard(p) {
   const ensured = base.length >= 3 ? base : [...base, ...base].slice(0, Math.max(3, base.length));
   ensured.forEach((blob, i) => {
     const img = document.createElement("img");
-    img.src = URL.createObjectURL(blob); img.loading = "lazy";
+    const src = resolveImageSrc(blob);
+    if (src) img.src = src;
+    img.loading = "lazy";
     img.alt = `${p.name} - image ${i+1}`;
     img.className = i === 0 ? "active" : "";
     car.appendChild(img);
@@ -229,6 +236,7 @@ function productCard(p) {
   const score = p.score ?? 0;
   badge.className = "badge " + (score >= 70 ? "good" : score >= 40 ? "ok" : "poor");
   badge.textContent = `Note: ${score}/100`;
+  badge.style.setProperty("--score", String(score));
 
   brandline.appendChild(title);
   brandline.appendChild(badge);
@@ -282,7 +290,9 @@ export function renderPending() {
     const thumb = document.createElement("div");
     thumb.className = "pending-thumb";
     const img = document.createElement("img");
-    if (item.images?.[0]) img.src = URL.createObjectURL(item.images[0]);
+    const first = item.images?.[0];
+    const src = resolveImageSrc(first);
+    if (src) img.src = src;
     img.alt = `${item.name} aperçu`;
     thumb.appendChild(img);
 
@@ -338,7 +348,8 @@ function openEditor(id) {
     const cell = document.createElement("div");
     cell.className = "cell";
     const img = document.createElement("img");
-    img.src = URL.createObjectURL(blob);
+    const src = resolveImageSrc(blob);
+    if (src) img.src = src;
     img.alt = `Image ${i+1}`;
     cell.appendChild(img);
     els.editorGallery.appendChild(cell);
@@ -385,3 +396,13 @@ async function approveEditing(e) {
 }
 
 function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
+
+function resolveImageSrc(img) {
+  if (img instanceof Blob) return URL.createObjectURL(img);
+  if (typeof img === "string") {
+    if (/^https?:\/\//i.test(img)) return img;
+    if (!state.gh.owner || !state.gh.repo) return img;
+    return `https://raw.githubusercontent.com/${state.gh.owner}/${state.gh.repo}/${encodeURIComponent(state.gh.branch)}/${img}`;
+  }
+  return "";
+}

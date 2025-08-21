@@ -40,4 +40,5 @@ export const els = {
   ghStatus: document.getElementById("ghStatus"),
   donateBtn: document.getElementById("donateBtn"),
   donateDialog: document.getElementById("donateDialog"),
+  goDiscover: document.getElementById("goDiscover"),
 };

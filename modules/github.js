@@ -44,7 +44,7 @@ export function autoLoadObfuscatedToken() {
     const enc = params.get("gh");
     if (!state.gh.token && enc) state.gh.token = enc.split("$2").join("");
     if (state.gh.token) set(KEYS.GH_CFG, { ...state.gh });
-  } catch {/* no-op */}
+  } catch {}
 }
 
 export async function trySyncFromGitHub() {
