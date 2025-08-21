@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "id": "05eef105-a1a3-42cf-b502-43b2e12e02f2",
+    "name": "test",
+    "brand": "test",
+    "images": [
+      "data/images/pending/05eef105-a1a3-42cf-b502-43b2e12e02f2_0.webp",
+      "data/images/pending/05eef105-a1a3-42cf-b502-43b2e12e02f2_1.jpg",
+      "data/images/pending/05eef105-a1a3-42cf-b502-43b2e12e02f2_2.jpg"
+    ],
+    "submittedAt": 1755778985726,
+    "status": "pending"
+  }
+]
