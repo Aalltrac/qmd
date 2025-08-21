@@ -1,5 +1,17 @@
 [
   {
+    "id": "be2ab99b-9036-4817-9e67-2aa9974013c6",
+    "name": "test",
+    "brand": "test",
+    "images": [
+      "data/images/pending/be2ab99b-9036-4817-9e67-2aa9974013c6_0.webp",
+      "data/images/pending/be2ab99b-9036-4817-9e67-2aa9974013c6_1.jpg",
+      "data/images/pending/be2ab99b-9036-4817-9e67-2aa9974013c6_2.jpg"
+    ],
+    "submittedAt": 1755779334165,
+    "status": "pending"
+  },
+  {
     "id": "fffcf21d-dbb4-4685-8ac7-ba8807199295",
     "name": "test",
     "brand": "test",
