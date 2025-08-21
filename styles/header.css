@@ -1,0 +1,228 @@
+.site-header {
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between;
+  padding: var(--space-lg) var(--space-xl);
+  position: sticky; 
+  top: 0; 
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  z-index: 1000; 
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow); 
+  transition: var(--transition);
+}
+.site-header::before { 
+  content:""; 
+  position:absolute; 
+  top:0; 
+  left:0; 
+  right:0; 
+  height:4px;
+  background: var(--grad-rainbow); 
+  opacity:.8; 
+  background-size:400% 100%; 
+  animation: rainbowFlow 8s ease-in-out infinite; 
+}
+.site-header.scrolled { 
+  padding: var(--space-md) var(--space-xl); 
+  background: rgba(255,255,255,.95); 
+  box-shadow: var(--shadow-purple); 
+}
+.site-header.scrolled .logo { 
+  width: 40px; 
+  height: 40px; 
+}
+.site-header.scrolled .brand-title { 
+  font-size: 28px; 
+}
+
+.brand { 
+  display: flex; 
+  gap: 16px; 
+  align-items: center; 
+  position: relative; 
+}
+
+.logo {
+  width: 52px; 
+  height: 52px; 
+  border-radius: 50%; 
+  object-fit: cover;
+  box-shadow: 
+    0 0 0 3px rgba(255,255,255,.9), 
+    0 0 0 4px var(--glass-border), 
+    var(--shadow-purple);
+  transition: var(--transition); 
+  position: relative; 
+  cursor: pointer;
+}
+.logo::before { 
+  content:""; 
+  position:absolute; 
+  inset:-8px; 
+  border-radius:50%; 
+  background: var(--grad-rainbow); 
+  z-index:-1; 
+  opacity:0; 
+  animation: logoRotate 10s linear infinite; 
+  transition: var(--transition); 
+}
+.logo:hover { 
+  transform: scale(1.1) rotate(15deg); 
+  box-shadow: 
+    0 0 0 3px rgba(255,255,255,.9), 
+    0 0 0 6px var(--qmd-purple-light), 
+    var(--shadow-glow); 
+  filter: brightness(1.1) saturate(1.2); 
+}
+.logo:hover::before { 
+  opacity:.3; 
+  inset:-12px; 
+}
+
+.brand-title {
+  font-size: 36px; 
+  font-weight: 900; 
+  letter-spacing: -0.03em;
+  background: var(--grad-primary); 
+  -webkit-background-clip: text; 
+  background-clip: text; 
+  color: transparent;
+  background-size: 300% 300%; 
+  animation: liquidFlow 6s ease-in-out infinite;
+  position: relative; 
+  cursor: pointer; 
+  transition: var(--transition);
+}
+.brand-title::before { 
+  content:"QMD"; 
+  position:absolute; 
+  inset:0; 
+  background: var(--grad-rainbow); 
+  -webkit-background-clip: text; 
+  background-clip: text; 
+  color: transparent; 
+  opacity: 0; 
+  filter: blur(2px); 
+  transition: var(--transition); 
+}
+.brand-title:hover { 
+  transform: scale(1.05); 
+  filter: drop-shadow(0 0 20px rgba(139, 92, 246, .5)); 
+}
+.brand-title:hover::before { 
+  opacity: .7; 
+  animation: pulseGlow .6s ease-in-out; 
+}
+
+.tagline {
+  margin: -6px 0 0 0; 
+  font-size: 13px; 
+  color: var(--text-light); 
+  font-weight: 600;
+  background: var(--glass-bg); 
+  backdrop-filter: var(--glass-blur); 
+  padding: 6px 16px; 
+  border-radius: 999px;
+  border: 1px solid var(--glass-border); 
+  position: relative; 
+  overflow: hidden; 
+  transition: var(--transition);
+}
+.tagline::before { 
+  content:""; 
+  position:absolute; 
+  inset:0; 
+  background: var(--grad-primary); 
+  opacity:0; 
+  transition: var(--transition); 
+  border-radius: 999px; 
+}
+.tagline:hover { 
+  color:#fff; 
+  transform: scale(1.05); 
+  cursor: default; 
+}
+.tagline:hover::before { 
+  opacity: 1; 
+}
+
+.nav { 
+  display: flex; 
+  gap: var(--space-sm); 
+  align-items: center; 
+  position: relative; 
+}
+.nav::before { 
+  content:""; 
+  position:absolute; 
+  inset:-8px; 
+  background: var(--grad-mesh); 
+  border-radius: var(--radius-lg); 
+  opacity:0; 
+  transition: var(--transition); 
+  z-index:-1; 
+}
+.nav:hover::before { 
+  opacity:.3; 
+}
+
+.nav-btn {
+  background: var(--glass-bg); 
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border); 
+  padding: var(--space-md) var(--space-lg);
+  border-radius: 999px; 
+  cursor: pointer; 
+  transition: var(--transition);
+  font-weight: 600; 
+  position: relative; 
+  overflow: hidden;
+}
+.nav-btn::before { 
+  content:""; 
+  position:absolute; 
+  inset:0; 
+  background: var(--grad-accent); 
+  opacity:0; 
+  transition: var(--transition); 
+  z-index:-1; 
+  transform: scale(.8) rotate(180deg); 
+}
+.nav-btn::after { 
+  content:""; 
+  position:absolute; 
+  bottom:-2px; 
+  left:50%; 
+  width:0; 
+  height:2px; 
+  background: var(--grad-primary); 
+  transition: var(--transition); 
+  transform: translateX(-50%); 
+}
+.nav-btn:hover { 
+  transform: translateY(-4px) scale(1.05); 
+  box-shadow: var(--shadow-purple); 
+  color:#fff; 
+}
+.nav-btn:hover::before { 
+  opacity:1; 
+  transform: scale(1) rotate(0deg); 
+}
+.nav-btn:hover::after { 
+  width:80%; 
+}
+.nav-btn[aria-current="page"] { 
+  background: var(--grad-accent); 
+  color:#fff; 
+  box-shadow: var(--shadow-glow); 
+  transform: translateY(-2px); 
+}
+.nav-btn[aria-current="page"]::after { 
+  width:100%; 
+  height:3px; 
+  bottom:-4px; 
+  background: rgba(255,255,255,.8); 
+  box-shadow: 0 0 10px rgba(255,255,255,.5); 
+}

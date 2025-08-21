@@ -1,0 +1,108 @@
+@keyframes liquidFlow {
+  0%, 100% { background-position: 0% 50%; }
+  25% { background-position: 100% 50%; }
+  50% { background-position: 50% 100%; }
+  75% { background-position: 100% 0%; }
+}
+
+@keyframes rainbowFlow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes slowRotate {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes floatingParticles {
+  0%, 100% { 
+    transform: translateY(0px) translateX(0px);
+    background-size: 400px 400px, 300px 300px, 200px 200px, 350px 350px, 250px 250px;
+  }
+  25% { 
+    transform: translateY(-20px) translateX(10px);
+    background-size: 450px 450px, 350px 350px, 250px 250px, 400px 400px, 300px 300px;
+  }
+  50% { 
+    transform: translateY(-10px) translateX(20px);
+    background-size: 420px 420px, 320px 320px, 220px 220px, 370px 370px, 270px 270px;
+  }
+  75% { 
+    transform: translateY(-30px) translateX(-10px);
+    background-size: 380px 380px, 280px 280px, 180px 180px, 330px 330px, 230px 230px;
+  }
+}
+
+@keyframes logoRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { filter: blur(2px); opacity: 0; }
+  50% { filter: blur(0px); opacity: 1; }
+}
+
+@keyframes morphingBg {
+  0%, 100% { 
+    background-position: 0% 0%, 100% 100%, 50% 50%;
+    opacity: 0.05;
+  }
+  33% { 
+    background-position: 100% 0%, 0% 100%, 70% 30%;
+    opacity: 0.08;
+  }
+  66% { 
+    background-position: 50% 100%, 50% 0%, 30% 70%;
+    opacity: 0.06;
+  }
+}
+
+@keyframes cardFloat {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-5px) rotate(0.5deg); }
+}
+
+@keyframes shimmerWave {
+  0% { transform: translateX(-100%) skewX(-15deg); }
+  100% { transform: translateX(200%) skewX(-15deg); }
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.05); opacity: 1; }
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+@keyframes backdropFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes dialogSlide {
+  from { 
+    opacity: 0; 
+    transform: translateY(-20px) scale(0.95); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0) scale(1); 
+  }
+}
+
+@keyframes tabSlide {
+  from { 
+    opacity: 0; 
+    transform: translateY(30px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+

@@ -1,0 +1,67 @@
+:root {
+  --qmd-purple: #8B5CF6;
+  --qmd-purple-light: #A78BFA;
+  --qmd-purple-dark: #7C3AED;
+  --qmd-pink: #EC4899;
+  --qmd-pink-light: #F472B6;
+  --qmd-pink-dark: #DB2777;
+  --qmd-orange: #F97316;
+  --qmd-orange-light: #FB923C;
+  --qmd-orange-dark: #EA580C;
+  --qmd-yellow: #FCD34D;
+  --qmd-yellow-light: #FDE68A;
+  --qmd-yellow-dark: #F59E0B;
+  --qmd-green: #10B981;
+  --qmd-green-light: #34D399;
+  --qmd-green-dark: #059669;
+  --qmd-blue: #06B6D4;
+  --qmd-blue-light: #22D3EE;
+  --qmd-blue-dark: #0891B2;
+  --qmd-red: #EF4444;
+  --qmd-red-light: #F87171;
+  --qmd-red-dark: #DC2626;
+  
+  --grad-primary: linear-gradient(135deg, #EC4899 0%, #F97316 25%, #FCD34D 50%, #10B981 75%, #06B6D4 100%);
+  --grad-accent: linear-gradient(45deg, #8B5CF6, #EC4899, #F97316);
+  --grad-secondary: linear-gradient(180deg, #06B6D4, #10B981);
+  --grad-warm: linear-gradient(135deg, #F97316, #FCD34D);
+  --grad-cool: linear-gradient(135deg, #8B5CF6, #06B6D4);
+  --grad-rainbow: conic-gradient(from 0deg, #EC4899, #F97316, #FCD34D, #10B981, #06B6D4, #8B5CF6, #EC4899);
+  --grad-mesh: 
+    radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 40% 60%, rgba(249, 115, 22, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 60% 40%, rgba(16, 185, 129, 0.1) 0%, transparent 45%);
+  
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --glass-blur: blur(16px) saturate(180%);
+  
+  --shadow-purple: 0 20px 25px -5px rgba(139, 92, 246, 0.1), 0 10px 10px -5px rgba(139, 92, 246, 0.04);
+  --shadow-pink: 0 20px 25px -5px rgba(236, 72, 153, 0.1), 0 10px 10px -5px rgba(236, 72, 153, 0.04);
+  --shadow-warm: 0 20px 25px -5px rgba(249, 115, 22, 0.1), 0 10px 10px -5px rgba(249, 115, 22, 0.04);
+  --shadow-glow: 0 0 30px rgba(139, 92, 246, 0.3), 0 0 60px rgba(236, 72, 153, 0.2);
+  
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+  
+  --bg: #ffffff;
+  --text: #111827;
+  --text-light: #6B7280;
+  --muted: #9CA3AF;
+  --border: #E5E7EB;
+  --surface: #F9FAFB;
+  --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --radius: 16px;
+  --radius-lg: 24px;
+  
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
