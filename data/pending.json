@@ -1,17 +1,5 @@
 [
   {
-    "id": "67d66764-628e-43e8-a50f-670fc46397d7",
-    "name": "vdk,v",
-    "brand": "juefsjf",
-    "images": [
-      "data/images/pending/67d66764-628e-43e8-a50f-670fc46397d7_0.jpg",
-      "data/images/pending/67d66764-628e-43e8-a50f-670fc46397d7_1.webp",
-      "data/images/pending/67d66764-628e-43e8-a50f-670fc46397d7_2.jpg"
-    ],
-    "submittedAt": 1755890223596,
-    "status": "pending"
-  },
-  {
     "id": "9efcb5cd-f834-4d1d-99fb-9fcafbeef479",
     "name": "Fusilli",
     "brand": "Carrefour",
