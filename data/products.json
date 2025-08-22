@@ -1,5 +1,41 @@
 [
   {
+    "id": "9896ec3f-a802-4385-a838-1f054537000b",
+    "name": "Fusilli – Pâtes alimentaires de semoule de blé dur",
+    "brand": "Carrefour Classic’",
+    "images": [
+      "data/images/pending/9efcb5cd-f834-4d1d-99fb-9fcafbeef479_0.png",
+      "data/images/pending/9efcb5cd-f834-4d1d-99fb-9fcafbeef479_1.png",
+      "data/images/pending/9efcb5cd-f834-4d1d-99fb-9fcafbeef479_2.png"
+    ],
+    "positives": [
+      "Semoule de blé dur (riche en glucides complexes, énergie durable)",
+      "Faible en matières grasses (1,9 g de lipides / 100 g, dont 0,3 g de graisses saturées)",
+      "Riche en glucides complexes (70 g / 100 g), source principale d’énergie, idéale pour le sport et l’endurance",
+      "Source de protéines végétales (12 g / 100 g), intéressant pour les végétariens (bien que pas complet en acides aminés)",
+      "Indice glycémique modéré par rapport au pain blanc ou riz blanc (surtout si cuit al dente)",
+      "Nutri-Score A",
+      "Sans additifs, sans colorants, sans conservateurs"
+    ],
+    "negatives": [
+      "Peut poser problème en cas de consommation excessive, surtout pour les personnes diabétiques ou sédentaires du fait que c'est un produit riche en glucides.",
+      "Pauvre en fibres (3 g / 100 g), idéalement, il faudrait plus de 5 g pour un aliment riche en fibres",
+      "Indice glycémique qui augmente si la cuisson est prolongée (au-delà d’al dente)",
+      "Manque certains acides aminés essentiels (à compléter avec légumineuses ou autres sources)",
+      "Peut contenir des traces de soja et de moutarde → attention aux personnes allergiques"
+    ],
+    "advice": [
+      "Privilégier la cuisson al dente (6 minutes comme indiqué sur le paquet) → cela réduit l’index glycémique et améliore la satiété",
+      "Associer avec des légumes pour augmenter l’apport en fibres, vitamines et minéraux",
+      "Ajouter une source de protéines (légumineuses comme lentilles, pois chiches, ou protéines animales comme poisson, poulet, œufs)",
+      "Éviter les sauces trop grasses ou trop salées (ex : sauces industrielles, crème épaisse, fromage en excès)",
+      "70-80 g crus par adulte en plat principal, équilibré avec légumes et protéines",
+      "Préférer une consommation en journée (déjeuner ou avant activité physique), plutôt que le soir si mode de vie sédentaire"
+    ],
+    "score": 82,
+    "approvedAt": 1755894551983
+  },
+  {
     "id": "74a34c1c-96d8-42ba-83b4-1d23951db79f",
     "name": "Aucun produit publie",
     "brand": "None",
