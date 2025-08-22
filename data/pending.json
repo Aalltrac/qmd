@@ -1,14 +1,1 @@
-[
-  {
-    "id": "9efcb5cd-f834-4d1d-99fb-9fcafbeef479",
-    "name": "Fusilli",
-    "brand": "Carrefour",
-    "images": [
-      "data/images/pending/9efcb5cd-f834-4d1d-99fb-9fcafbeef479_0.jpg",
-      "data/images/pending/9efcb5cd-f834-4d1d-99fb-9fcafbeef479_1.jpg",
-      "data/images/pending/9efcb5cd-f834-4d1d-99fb-9fcafbeef479_2.jpg"
-    ],
-    "submittedAt": 1755868607719,
-    "status": "pending"
-  }
-]
+[]
