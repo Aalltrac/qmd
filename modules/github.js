@@ -29,8 +29,36 @@ async function ghPut(path, contentBase64, message, sha) {
   const url = `${ghBase()}/${encodeURIComponent(path)}`.replace(/%2F/g,'/');
   const body = { message, content: contentBase64, branch: state.gh.branch };
   if (sha) body.sha = sha;
-  const res = await fetch(url, { method: "PUT", headers: ghHeaders(), body: JSON.stringify(body) });
-  if (!res.ok) throw new Error("GitHub PUT échec");
+  
+  console.log("GitHub PUT request:", {
+    url,
+    message,
+    hasSha: !!sha,
+    contentLength: contentBase64.length
+  });
+  
+  const res = await fetch(url, { 
+    method: "PUT", 
+    headers: ghHeaders(), 
+    body: JSON.stringify(body) 
+  });
+  
+  console.log("GitHub PUT response:", {
+    status: res.status,
+    statusText: res.statusText
+  });
+  
+  if (res.status === 304) {
+    console.warn("Contenu identique détecté (304), aucune modification effectuée");
+    return { status: "not_modified" };
+  }
+  
+  if (!res.ok) {
+    const errorText = await res.text();
+    console.error("GitHub PUT error:", errorText);
+    throw new Error(`GitHub PUT échec: ${res.status} - ${errorText}`);
+  }
+  
   return res.json();
 }
 
@@ -44,7 +72,7 @@ export function autoLoadObfuscatedToken() {
     const enc = params.get("gh");
     if (!state.gh.token && enc) state.gh.token = enc.split("$2").join("");
     if (state.gh.token) set(KEYS.GH_CFG, { ...state.gh });
-  } catch {}
+  } catch {/* no-op */}
 }
 
 export async function trySyncFromGitHub() {
@@ -109,49 +137,99 @@ export async function appendApprovedToGitHub(approved, sourcePending) {
     throw new Error("Configuration GitHub incomplète");
   }
   
+  // Préparer les images pour le produit approuvé
   const images = (sourcePending.images || []).map((img, i) =>
     typeof img === "string" ? img : `data/images/pending/${sourcePending.id}_${i}.png`
   );
   const approvedEntry = { ...approved, images };
   
+  // Ajouter aux produits approuvés sur GitHub
   const prodMeta = (await ghGet("data/products.json")) || {};
-  const current = prodMeta.content ? JSON.parse(atob(prodMeta.content)) : [];
-  current.unshift(approvedEntry);
-  await ghPut("data/products.json", btoa(JSON.stringify(current, null, 2)), `approve: ${approved.id}`, prodMeta.sha);
+  const currentProducts = prodMeta.content ? JSON.parse(atob(prodMeta.content)) : [];
   
-  const pendMeta = (await ghGet("data/pending.json")) || {};
-  if (pendMeta.content) {
-    const list = JSON.parse(atob(pendMeta.content)).filter(p => p.id !== sourcePending.id);
-    await ghPut("data/pending.json", btoa(JSON.stringify(list, null, 2)), `pending: remove ${sourcePending.id}`, pendMeta.sha);
+  // Vérifier si le produit n'existe pas déjà (éviter les doublons)
+  const existingProduct = currentProducts.find(p => p.id === approved.id || p.name === approved.name);
+  if (!existingProduct) {
+    currentProducts.unshift(approvedEntry);
+    
+    // Générer le JSON avec un formatage cohérent
+    const newProductsJson = JSON.stringify(currentProducts, null, 2);
+    const newProductsB64 = btoa(newProductsJson);
+    
+    console.log("Mise à jour products.json avec:", {
+      productsCount: currentProducts.length,
+      newProduct: approvedEntry.name
+    });
+    
+    const result = await ghPut("data/products.json", newProductsB64, `approve: ${approved.name} (${approved.id})`, prodMeta.sha);
+    console.log("Résultat products.json:", result);
   }
   
+  // Supprimer des produits en attente sur GitHub
+  const pendMeta = (await ghGet("data/pending.json")) || {};
+  if (pendMeta.content) {
+    const currentPending = JSON.parse(atob(pendMeta.content));
+    const updatedPending = currentPending.filter(p => p.id !== sourcePending.id);
+    
+    // Seulement mettre à jour si quelque chose a changé
+    if (updatedPending.length !== currentPending.length) {
+      const newPendingJson = JSON.stringify(updatedPending, null, 2);
+      const newPendingB64 = btoa(newPendingJson);
+      
+      console.log("Mise à jour pending.json:", {
+        removed: sourcePending.id,
+        remainingCount: updatedPending.length
+      });
+      
+      const result = await ghPut("data/pending.json", newPendingB64, `pending: remove ${sourcePending.name} (${sourcePending.id})`, pendMeta.sha);
+      console.log("Résultat pending.json:", result);
+    }
+  }
+  
+  // Mettre à jour le state local pour être sûr qu'il soit synchronisé
   await set(KEYS.PRODUCTS, state.products);
   await set(KEYS.PENDING, state.pending);
 }
 
+/* remove a pending item by id from pending.json */
 export async function removePendingOnGitHubById(id) {
   if (!state.gh.owner || !state.gh.repo || !state.gh.token) {
     throw new Error("Configuration GitHub incomplète");
   }
   
   try {
+    // Récupérer le fichier pending.json actuel depuis GitHub
     const pendMeta = (await ghGet("data/pending.json")) || {};
     const current = pendMeta.content ? JSON.parse(atob(pendMeta.content)) : [];
     
+    // Filtrer pour supprimer l'élément avec l'id spécifié
     const next = current.filter(p => p.id !== id);
     
+    // Si rien n'a changé, pas besoin de mettre à jour
     if (next.length === current.length) {
       console.warn(`Aucun élément avec l'id ${id} trouvé dans pending.json`);
       return;
     }
     
-    await ghPut("data/pending.json", btoa(JSON.stringify(next, null, 2)), `pending: remove ${id}`, pendMeta.sha);
+    // Générer le JSON avec un formatage cohérent
+    const newPendingJson = JSON.stringify(next, null, 2);
+    const newPendingB64 = btoa(newPendingJson);
     
+    console.log("Suppression de pending.json:", {
+      removedId: id,
+      remainingCount: next.length
+    });
+    
+    // Mettre à jour sur GitHub
+    const result = await ghPut("data/pending.json", newPendingB64, `pending: remove item ${id}`, pendMeta.sha);
+    console.log("Résultat suppression:", result);
+    
+    // Synchroniser le state local avec GitHub
     await set(KEYS.PENDING, state.pending);
     
   } catch (error) {
     console.error("Erreur lors de la suppression sur GitHub:", error);
-    throw error;
+    throw error; // Re-lancer l'erreur pour que l'interface utilisateur puisse la gérer
   }
 }
 
