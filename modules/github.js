@@ -105,19 +105,53 @@ export async function pushPendingToGitHub(item) {
 }
 
 export async function appendApprovedToGitHub(approved, sourcePending) {
-  if (!state.gh.owner || !state.gh.repo || !state.gh.token) return;
+  if (!state.gh.owner || !state.gh.repo || !state.gh.token) {
+    throw new Error("Configuration GitHub incomplète");
+  }
+  
   const images = (sourcePending.images || []).map((img, i) =>
     typeof img === "string" ? img : `data/images/pending/${sourcePending.id}_${i}.png`
   );
   const approvedEntry = { ...approved, images };
+  
   const prodMeta = (await ghGet("data/products.json")) || {};
   const current = prodMeta.content ? JSON.parse(atob(prodMeta.content)) : [];
   current.unshift(approvedEntry);
   await ghPut("data/products.json", btoa(JSON.stringify(current, null, 2)), `approve: ${approved.id}`, prodMeta.sha);
+  
   const pendMeta = (await ghGet("data/pending.json")) || {};
   if (pendMeta.content) {
     const list = JSON.parse(atob(pendMeta.content)).filter(p => p.id !== sourcePending.id);
     await ghPut("data/pending.json", btoa(JSON.stringify(list, null, 2)), `pending: remove ${sourcePending.id}`, pendMeta.sha);
+  }
+  
+  await set(KEYS.PRODUCTS, state.products);
+  await set(KEYS.PENDING, state.pending);
+}
+
+export async function removePendingOnGitHubById(id) {
+  if (!state.gh.owner || !state.gh.repo || !state.gh.token) {
+    throw new Error("Configuration GitHub incomplète");
+  }
+  
+  try {
+    const pendMeta = (await ghGet("data/pending.json")) || {};
+    const current = pendMeta.content ? JSON.parse(atob(pendMeta.content)) : [];
+    
+    const next = current.filter(p => p.id !== id);
+    
+    if (next.length === current.length) {
+      console.warn(`Aucun élément avec l'id ${id} trouvé dans pending.json`);
+      return;
+    }
+    
+    await ghPut("data/pending.json", btoa(JSON.stringify(next, null, 2)), `pending: remove ${id}`, pendMeta.sha);
+    
+    await set(KEYS.PENDING, state.pending);
+    
+  } catch (error) {
+    console.error("Erreur lors de la suppression sur GitHub:", error);
+    throw error;
   }
 }
 

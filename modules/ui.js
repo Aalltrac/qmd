@@ -2,7 +2,7 @@ import { get, set } from "idb-keyval";
 import { KEYS, ADMIN_PASS } from "./constants.js";
 import { els } from "./dom.js";
 import { state, applyGhToUI } from "./state.js";
-import { pushPendingToGitHub, appendApprovedToGitHub, syncToGitHub } from "./github.js";
+import { pushPendingToGitHub, appendApprovedToGitHub, syncToGitHub, removePendingOnGitHubById } from "./github.js";
 
 export function bindUI() {
   els.navBtns.forEach(btn => btn.addEventListener("click", () => showTab(btn.dataset.tab)));
@@ -69,6 +69,12 @@ export function bindUI() {
     readGhFromUI();
     await set(KEYS.GH_CFG, { ...state.gh });
     await syncToGitHub();
+  });
+
+  els.approveBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    approveEditing(e);
   });
 }
 
@@ -249,7 +255,8 @@ function productCard(p) {
   meta.className = "meta";
   const pos = bulletBlock("Points positifs", p.positives);
   const neg = bulletBlock("Points négatifs", p.negatives);
-  const adv = bulletBlock("Conseils de consommation", p.advice ? [p.advice] : []);
+  const advItems = Array.isArray(p.advice) ? p.advice : (p.advice ? [p.advice] : []);
+  const adv = bulletBlock("Conseils de consommation", advItems);
 
   meta.appendChild(pos);
   meta.appendChild(neg);
@@ -313,11 +320,27 @@ export function renderPending() {
     edit.addEventListener("click", () => openEditor(item.id));
     const discard = document.createElement("button");
     discard.className = "ghost"; discard.textContent = "Supprimer";
-    discard.addEventListener("click", async () => {
+    discard.addEventListener("click", async (e) => {
       if (confirm("Supprimer cette proposition ?")) {
-        state.pending = state.pending.filter(p => p.id !== item.id);
-        await set(KEYS.PENDING, state.pending);
-        renderPending();
+        e.target.disabled = true;
+        e.target.textContent = "Suppression...";
+        
+        try {
+          state.pending = state.pending.filter(p => p.id !== item.id);
+          await set(KEYS.PENDING, state.pending);
+          
+          await removePendingOnGitHubById(item.id);
+          
+          showModSuccess("Proposition supprimée avec succès.");
+          
+          renderPending();
+        } catch (error) {
+          console.error("Erreur lors de la suppression:", error);
+          showModError("Erreur lors de la suppression sur GitHub.");
+          
+          e.target.disabled = false;
+          e.target.textContent = "Supprimer";
+        }
       }
     });
 
@@ -370,7 +393,7 @@ async function approveEditing(e) {
   const brand = els.edBrand.value.trim();
   const positives = els.edPositives.value.split("\n").map(s => s.trim()).filter(Boolean);
   const negatives = els.edNegatives.value.split("\n").map(s => s.trim()).filter(Boolean);
-  const advice = els.edAdvice.value.trim();
+  const advice = els.edAdvice.value.split("\n").map(s => s.trim()).filter(Boolean);
   const score = clamp(parseInt(els.edScore.value, 10) || 0, 0, 100);
 
   const approved = {
@@ -382,18 +405,34 @@ async function approveEditing(e) {
     approvedAt: Date.now(),
   };
 
-  state.products.unshift(approved);
-  state.pending = state.pending.filter(p => p.id !== id);
+  els.approveBtn.disabled = true;
+  els.approveBtn.textContent = "Envoi à GitHub...";
 
-  await set(KEYS.PRODUCTS, state.products);
-  await set(KEYS.PENDING, state.pending);
-  await appendApprovedToGitHub(approved, item).catch(()=>{});
-  if (els.editor.close) els.editor.close(); else els.editor.classList.add("hidden");
-  state.editingId = null;
+  try {
+    state.products.unshift(approved);
+    state.pending = state.pending.filter(p => p.id !== id);
+    await set(KEYS.PRODUCTS, state.products);
+    await set(KEYS.PENDING, state.pending);
 
-  renderDiscover();
-  renderPending();
-  showTab("discover");
+    await appendApprovedToGitHub(approved, item);
+
+    if (els.editor.close) els.editor.close(); 
+    else els.editor.classList.add("hidden");
+    
+    state.editingId = null;
+
+    showModSuccess("Produit approuvé et synchronisé sur GitHub avec succès !");
+
+    renderDiscover();
+    renderPending();
+
+  } catch (error) {
+    console.error("Erreur lors de l'approbation:", error);
+    showModError("Erreur lors de la synchronisation avec GitHub.");
+  } finally {
+    els.approveBtn.disabled = false;
+    els.approveBtn.textContent = "Approuver";
+  }
 }
 
 function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
@@ -406,4 +445,26 @@ function resolveImageSrc(img) {
     return `https://raw.githubusercontent.com/${state.gh.owner}/${state.gh.repo}/${encodeURIComponent(state.gh.branch)}/${img}`;
   }
   return "";
+}
+
+function showModSuccess(message) {
+  const successEl = document.getElementById("modSuccess");
+  if (successEl) {
+    successEl.textContent = message;
+    successEl.classList.remove("hidden");
+    setTimeout(() => {
+      successEl.classList.add("hidden");
+    }, 5000);
+  }
+}
+
+function showModError(message) {
+  const errorEl = document.getElementById("modError");
+  if (errorEl) {
+    errorEl.textContent = message;
+    errorEl.classList.remove("hidden");
+    setTimeout(() => {
+      errorEl.classList.add("hidden");
+    }, 5000);
+  }
 }
