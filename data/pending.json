@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "id": "76ef2e54-b2ec-492c-a597-bf4a456c002f",
+    "name": "dzqd",
+    "brand": "zfzqf",
+    "images": [
+      "data/images/pending/76ef2e54-b2ec-492c-a597-bf4a456c002f_0.jpg",
+      "data/images/pending/76ef2e54-b2ec-492c-a597-bf4a456c002f_1.webp",
+      "data/images/pending/76ef2e54-b2ec-492c-a597-bf4a456c002f_2.jpg"
+    ],
+    "submittedAt": 1755856747842,
+    "status": "pending"
+  }
+]
