@@ -232,6 +232,9 @@ function productCard(p) {
   brandline.className = "brandline";
   const title = document.createElement("h3");
   title.textContent = p.name;
+  const brandChip = document.createElement("span");
+  brandChip.className = "brand-chip";
+  brandChip.textContent = p.brand;
   const badge = document.createElement("span");
   const score = p.score ?? 0;
   badge.className = "badge " + (score >= 70 ? "good" : score >= 40 ? "ok" : "poor");
@@ -239,17 +242,15 @@ function productCard(p) {
   badge.style.setProperty("--score", String(score));
 
   brandline.appendChild(title);
+  brandline.appendChild(brandChip);
   brandline.appendChild(badge);
 
   const meta = document.createElement("div");
   meta.className = "meta";
-  const brandRow = document.createElement("div");
-  brandRow.textContent = `Marque: ${p.brand}`;
   const pos = bulletBlock("Points positifs", p.positives);
   const neg = bulletBlock("Points négatifs", p.negatives);
   const adv = bulletBlock("Conseils de consommation", p.advice ? [p.advice] : []);
 
-  meta.appendChild(brandRow);
   meta.appendChild(pos);
   meta.appendChild(neg);
   meta.appendChild(adv);
