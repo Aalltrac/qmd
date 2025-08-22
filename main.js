@@ -32,6 +32,11 @@ async function init() {
   renderPending();
   if (!HTMLDialogElement.prototype.showModal && els.donateDialog) els.donateDialog.classList.add("hidden");
 
+  const header = document.querySelector(".site-header");
+  const onScroll = () => header?.classList.toggle("scrolled", window.scrollY > 10);
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
   if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     const bg = document.querySelector(".bg-squares");
     const onMove = (x=0,y=0) => {
