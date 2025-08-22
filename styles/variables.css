@@ -21,27 +21,39 @@
   --qmd-red-light: #F87171;
   --qmd-red-dark: #DC2626;
   
-  --grad-primary: linear-gradient(135deg, #EC4899 0%, #F97316 25%, #FCD34D 50%, #10B981 75%, #06B6D4 100%);
-  --grad-accent: linear-gradient(45deg, #8B5CF6, #EC4899, #F97316);
-  --grad-secondary: linear-gradient(180deg, #06B6D4, #10B981);
-  --grad-warm: linear-gradient(135deg, #F97316, #FCD34D);
-  --grad-cool: linear-gradient(135deg, #8B5CF6, #06B6D4);
-  --grad-rainbow: conic-gradient(from 0deg, #EC4899, #F97316, #FCD34D, #10B981, #06B6D4, #8B5CF6, #EC4899);
+  --grad-primary: linear-gradient(135deg, #EC4899 0%, #8B5CF6 25%, #06B6D4 50%, #10B981 75%, #F97316 100%);
+  --grad-accent: linear-gradient(135deg, #8B5CF6 0%, #EC4899 50%, #F97316 100%);
+  --grad-secondary: linear-gradient(135deg, #06B6D4 0%, #10B981 100%);
+  --grad-warm: linear-gradient(135deg, #F97316 0%, #FCD34D 100%);
+  --grad-cool: linear-gradient(135deg, #8B5CF6 0%, #06B6D4 100%);
+  --grad-rainbow: conic-gradient(from 0deg, #EC4899, #8B5CF6, #06B6D4, #10B981, #F97316, #FCD34D, #EC4899);
+  --grad-logo-inspired: radial-gradient(ellipse at center, #8B5CF6 0%, #EC4899 30%, #F97316 60%, #06B6D4 100%);
+  
   --grad-mesh: 
-    radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.10) 0%, transparent 50%),
     radial-gradient(circle at 40% 60%, rgba(249, 115, 22, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 60% 40%, rgba(16, 185, 129, 0.1) 0%, transparent 45%);
+    radial-gradient(circle at 60% 40%, rgba(16, 185, 129, 0.09) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.06) 0%, transparent 60%);
+    
+  --grad-hero-bg: 
+    radial-gradient(ellipse 1200px 600px at 50% 0%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse 800px 400px at 20% 100%, rgba(236, 72, 153, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse 600px 300px at 80% 80%, rgba(249, 115, 22, 0.10) 0%, transparent 50%);
   
-  --glass-bg: rgba(255, 255, 255, 0.1);
-  --glass-border: rgba(255, 255, 255, 0.18);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  --glass-blur: blur(16px) saturate(180%);
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-bg-strong: rgba(255, 255, 255, 0.15);
+  --glass-border: rgba(255, 255, 255, 0.20);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --glass-blur: blur(20px) saturate(180%);
+  --glass-blur-strong: blur(24px) saturate(200%);
   
-  --shadow-purple: 0 20px 25px -5px rgba(139, 92, 246, 0.1), 0 10px 10px -5px rgba(139, 92, 246, 0.04);
-  --shadow-pink: 0 20px 25px -5px rgba(236, 72, 153, 0.1), 0 10px 10px -5px rgba(236, 72, 153, 0.04);
-  --shadow-warm: 0 20px 25px -5px rgba(249, 115, 22, 0.1), 0 10px 10px -5px rgba(249, 115, 22, 0.04);
-  --shadow-glow: 0 0 30px rgba(139, 92, 246, 0.3), 0 0 60px rgba(236, 72, 153, 0.2);
+  --shadow-purple: 0 20px 25px -5px rgba(139, 92, 246, 0.15), 0 10px 10px -5px rgba(139, 92, 246, 0.08);
+  --shadow-pink: 0 20px 25px -5px rgba(236, 72, 153, 0.15), 0 10px 10px -5px rgba(236, 72, 153, 0.08);
+  --shadow-warm: 0 20px 25px -5px rgba(249, 115, 22, 0.15), 0 10px 10px -5px rgba(249, 115, 22, 0.08);
+  --shadow-cool: 0 20px 25px -5px rgba(6, 182, 212, 0.15), 0 10px 10px -5px rgba(6, 182, 212, 0.08);
+  --shadow-glow: 0 0 40px rgba(139, 92, 246, 0.4), 0 0 80px rgba(236, 72, 153, 0.25);
+  --shadow-rainbow: 0 20px 40px -5px rgba(139, 92, 246, 0.2), 0 0 60px rgba(236, 72, 153, 0.15);
   
   --space-xs: 4px;
   --space-sm: 8px;
@@ -50,18 +62,53 @@
   --space-xl: 32px;
   --space-2xl: 48px;
   --space-3xl: 64px;
+  --space-4xl: 80px;
+  --space-5xl: 96px;
   
   --bg: #ffffff;
-  --text: #ffffff;
-  --text-light: #6B7280;
-  --muted: #9CA3AF;
-  --border: #E5E7EB;
-  --surface: #F9FAFB;
-  --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  --radius: 16px;
-  --radius-lg: 24px;
+  --text: #0F172A;
+  --text-light: #64748B;
+  --text-muted: #94A3B8;
+  --border: #E2E8F0;
+  --border-light: #F1F5F9;
+  --surface: #F8FAFC;
+  --surface-hover: #F1F5F9;
+  
+  --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0 32px 64px -12px rgba(0, 0, 0, 0.20);
+  
+  --radius: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
   
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   --bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root { 
+    --bg: #0A0F1C; 
+    --text: #F8FAFC; 
+    --text-light: #CBD5E1; 
+    --text-muted: #94A3B8; 
+    --border: #1E293B; 
+    --border-light: #334155;
+    --surface: #0F172A;
+    --surface-hover: #1E293B;
+    
+    --grad-mesh: 
+      radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.06) 0%, transparent 50%),
+      radial-gradient(circle at 40% 60%, rgba(249, 115, 22, 0.05) 0%, transparent 40%),
+      radial-gradient(circle at 60% 40%, rgba(16, 185, 129, 0.06) 0%, transparent 45%);
+      
+    --glass-bg: rgba(15, 23, 42, 0.60);
+    --glass-bg-strong: rgba(15, 23, 42, 0.80);
+    --glass-border: rgba(255, 255, 255, 0.1);
+  }
 }

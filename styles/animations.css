@@ -1,78 +1,188 @@
 @keyframes liquidFlow {
-  0%, 100% { background-position: 0% 50%; }
-  25% { background-position: 100% 50%; }
-  50% { background-position: 50% 100%; }
-  75% { background-position: 100% 0%; }
+  0%, 100% { 
+    background-position: 0% 50%; 
+    transform: scale(1);
+  }
+  25% { 
+    background-position: 100% 50%; 
+    transform: scale(1.02);
+  }
+  50% { 
+    background-position: 50% 100%; 
+    transform: scale(1);
+  }
+  75% { 
+    background-position: 100% 0%; 
+    transform: scale(0.98);
+  }
 }
 
 @keyframes rainbowFlow {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+  0%, 100% { 
+    background-position: 0% 50%; 
+    filter: hue-rotate(0deg);
+  }
+  50% { 
+    background-position: 100% 50%; 
+    filter: hue-rotate(45deg);
+  }
 }
 
 @keyframes slowRotate {
-  0% { transform: rotate(0deg) scale(1); }
-  50% { transform: rotate(180deg) scale(1.1); }
-  100% { transform: rotate(360deg) scale(1); }
+  0% { 
+    transform: rotate(0deg) scale(1); 
+    opacity: 0.03;
+  }
+  25% {
+    transform: rotate(90deg) scale(1.1);
+    opacity: 0.05;
+  }
+  50% { 
+    transform: rotate(180deg) scale(1.2); 
+    opacity: 0.04;
+  }
+  75% {
+    transform: rotate(270deg) scale(1.1);
+    opacity: 0.03;
+  }
+  100% { 
+    transform: rotate(360deg) scale(1); 
+    opacity: 0.03;
+  }
 }
 
 @keyframes floatingParticles {
   0%, 100% { 
-    transform: translateY(0px) translateX(0px);
-    background-size: 400px 400px, 300px 300px, 200px 200px, 350px 350px, 250px 250px;
+    transform: translateY(0px) translateX(0px) rotate(0deg);
+    background-size: 500px 500px, 400px 400px, 350px 350px, 450px 450px, 300px 300px, 250px 250px;
   }
-  25% { 
-    transform: translateY(-20px) translateX(10px);
-    background-size: 450px 450px, 350px 350px, 250px 250px, 400px 400px, 300px 300px;
+  16% { 
+    transform: translateY(-15px) translateX(10px) rotate(30deg);
+    background-size: 520px 520px, 420px 420px, 370px 370px, 470px 470px, 320px 320px, 270px 270px;
+  }
+  33% { 
+    transform: translateY(-25px) translateX(20px) rotate(60deg);
+    background-size: 480px 480px, 380px 380px, 330px 330px, 430px 430px, 280px 280px, 230px 230px;
   }
   50% { 
-    transform: translateY(-10px) translateX(20px);
-    background-size: 420px 420px, 320px 320px, 220px 220px, 370px 370px, 270px 270px;
+    transform: translateY(-10px) translateX(25px) rotate(90deg);
+    background-size: 510px 510px, 410px 410px, 360px 360px, 460px 460px, 310px 310px, 260px 260px;
   }
-  75% { 
-    transform: translateY(-30px) translateX(-10px);
-    background-size: 380px 380px, 280px 280px, 180px 180px, 330px 330px, 230px 230px;
+  66% { 
+    transform: translateY(-20px) translateX(15px) rotate(120deg);
+    background-size: 490px 490px, 390px 390px, 340px 340px, 440px 440px, 290px 290px, 240px 240px;
+  }
+  83% { 
+    transform: translateY(-30px) translateX(-5px) rotate(150deg);
+    background-size: 470px 470px, 370px 370px, 320px 320px, 420px 420px, 270px 270px, 220px 220px;
   }
 }
 
 @keyframes logoRotate {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% { 
+    transform: rotate(0deg) scale(1); 
+    filter: hue-rotate(0deg);
+  }
+  25% {
+    transform: rotate(90deg) scale(1.05);
+    filter: hue-rotate(90deg);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.1);
+    filter: hue-rotate(180deg);
+  }
+  75% {
+    transform: rotate(270deg) scale(1.05);
+    filter: hue-rotate(270deg);
+  }
+  100% { 
+    transform: rotate(360deg) scale(1); 
+    filter: hue-rotate(360deg);
+  }
 }
 
 @keyframes pulseGlow {
-  0%, 100% { filter: blur(2px); opacity: 0; }
-  50% { filter: blur(0px); opacity: 1; }
+  0%, 100% { 
+    filter: blur(2px); 
+    opacity: 0; 
+    transform: scale(1);
+  }
+  50% { 
+    filter: blur(0px); 
+    opacity: 1; 
+    transform: scale(1.1);
+  }
 }
 
 @keyframes morphingBg {
   0%, 100% { 
-    background-position: 0% 0%, 100% 100%, 50% 50%;
-    opacity: 0.05;
+    background-position: 0% 0%, 100% 100%, 50% 50%, 20% 80%, 80% 20%;
+    opacity: 0.8;
+    transform: scale(1) rotate(0deg);
   }
-  33% { 
-    background-position: 100% 0%, 0% 100%, 70% 30%;
-    opacity: 0.08;
+  20% { 
+    background-position: 100% 0%, 0% 100%, 70% 30%, 40% 60%, 60% 40%;
+    opacity: 0.9;
+    transform: scale(1.05) rotate(72deg);
   }
-  66% { 
-    background-position: 50% 100%, 50% 0%, 30% 70%;
-    opacity: 0.06;
+  40% { 
+    background-position: 50% 100%, 50% 0%, 30% 70%, 80% 20%, 20% 80%;
+    opacity: 0.7;
+    transform: scale(1.1) rotate(144deg);
+  }
+  60% { 
+    background-position: 0% 50%, 100% 50%, 90% 10%, 10% 90%, 50% 50%;
+    opacity: 0.85;
+    transform: scale(0.95) rotate(216deg);
+  }
+  80% { 
+    background-position: 75% 25%, 25% 75%, 60% 40%, 30% 70%, 70% 30%;
+    opacity: 0.75;
+    transform: scale(1.02) rotate(288deg);
   }
 }
 
 @keyframes cardFloat {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-5px) rotate(0.5deg); }
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg); 
+  }
+  25% {
+    transform: translateY(-3px) rotate(0.5deg);
+  }
+  50% { 
+    transform: translateY(-5px) rotate(0deg); 
+  }
+  75% {
+    transform: translateY(-3px) rotate(-0.5deg);
+  }
 }
 
 @keyframes shimmerWave {
-  0% { transform: translateX(-100%) skewX(-15deg); }
-  100% { transform: translateX(200%) skewX(-15deg); }
+  0% { 
+    transform: translateX(-100%) skewX(-15deg) scale(1, 1); 
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(0%) skewX(-15deg) scale(1.2, 1);
+  }
+  100% { 
+    transform: translateX(200%) skewX(-15deg) scale(1, 1); 
+    opacity: 0;
+  }
 }
 
 @keyframes breathe {
-  0%, 100% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.05); opacity: 1; }
+  0%, 100% { 
+    transform: scale(1); 
+    opacity: 0.9; 
+    filter: brightness(1);
+  }
+  50% { 
+    transform: scale(1.05); 
+    opacity: 1; 
+    filter: brightness(1.1);
+  }
 }
 
 @keyframes shimmer {
@@ -80,14 +190,20 @@
 }
 
 @keyframes backdropFade {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from { 
+    opacity: 0; 
+    backdrop-filter: blur(0px);
+  }
+  to { 
+    opacity: 1; 
+    backdrop-filter: blur(12px) saturate(120%);
+  }
 }
 
 @keyframes dialogSlide {
   from { 
     opacity: 0; 
-    transform: translateY(-20px) scale(0.95); 
+    transform: translateY(-30px) scale(0.9); 
   }
   to { 
     opacity: 1; 
@@ -98,11 +214,63 @@
 @keyframes tabSlide {
   from { 
     opacity: 0; 
-    transform: translateY(30px); 
+    transform: translateY(40px) scale(0.95); 
   }
   to { 
     opacity: 1; 
-    transform: translateY(0); 
+    transform: translateY(0) scale(1); 
   }
 }
 
+@keyframes gradientShift {
+  0%, 100% { 
+    background-position: 0% 50%; 
+    filter: hue-rotate(0deg) saturate(1);
+  }
+  25% {
+    background-position: 100% 25%;
+    filter: hue-rotate(15deg) saturate(1.1);
+  }
+  50% { 
+    background-position: 100% 50%; 
+    filter: hue-rotate(30deg) saturate(1.2);
+  }
+  75% {
+    background-position: 0% 75%;
+    filter: hue-rotate(15deg) saturate(1.1);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+    opacity: 0.8;
+  }
+  33% {
+    transform: translateY(-10px) translateX(5px);
+    opacity: 0.9;
+  }
+  66% {
+    transform: translateY(-5px) translateX(-5px);
+    opacity: 0.7;
+  }
+}
+
+@keyframes colorPulse {
+  0%, 100% {
+    background-position: 0% 50%;
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+  }
+  25% {
+    background-position: 50% 0%;
+    box-shadow: 0 0 30px rgba(236, 72, 153, 0.4);
+  }
+  50% {
+    background-position: 100% 50%;
+    box-shadow: 0 0 25px rgba(249, 115, 22, 0.35);
+  }
+  75% {
+    background-position: 50% 100%;
+    box-shadow: 0 0 28px rgba(16, 185, 129, 0.38);
+  }
+}
