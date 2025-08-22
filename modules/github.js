@@ -25,6 +25,27 @@ async function ghGet(path) {
   if (!res.ok) throw new Error("GitHub GET échec");
   return res.json();
 }
+// Fonction utilitaire pour encoder en base64 avec support UTF-8
+function utf8ToBase64(str) {
+  try {
+    // Encoder en UTF-8 puis en base64
+    return btoa(unescape(encodeURIComponent(str)));
+  } catch (error) {
+    console.error("Erreur d'encodage UTF-8 vers base64:", error);
+    // Fallback: essayer avec TextEncoder si disponible
+    if (typeof TextEncoder !== 'undefined') {
+      const encoder = new TextEncoder();
+      const bytes = encoder.encode(str);
+      let binary = '';
+      for (let i = 0; i < bytes.length; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      return btoa(binary);
+    }
+    throw error;
+  }
+}
+
 async function ghPut(path, contentBase64, message, sha) {
   const url = `${ghBase()}/${encodeURIComponent(path)}`.replace(/%2F/g,'/');
   const body = { message, content: contentBase64, branch: state.gh.branch };
@@ -99,8 +120,8 @@ export async function syncToGitHub() {
   try {
     const prodMeta = (await ghGet("data/products.json")) || {};
     const pendMeta = (await ghGet("data/pending.json")) || {};
-    const prodB64 = btoa(JSON.stringify(state.products.map(stripBlobsToPaths), null, 2));
-    const pendB64 = btoa(JSON.stringify(state.pending.map(stripBlobsToPaths), null, 2));
+    const prodB64 = utf8ToBase64(JSON.stringify(state.products.map(stripBlobsToPaths), null, 2));
+    const pendB64 = utf8ToBase64(JSON.stringify(state.pending.map(stripBlobsToPaths), null, 2));
     await ghPut("data/products.json", prodB64, "sync: products.json", prodMeta.sha);
     await ghPut("data/pending.json", pendB64, "sync: pending.json", pendMeta.sha);
     setGhStatus("Synchronisation des métadonnées effectuée.");
@@ -154,7 +175,7 @@ export async function appendApprovedToGitHub(approved, sourcePending) {
     
     // Générer le JSON avec un formatage cohérent
     const newProductsJson = JSON.stringify(currentProducts, null, 2);
-    const newProductsB64 = btoa(newProductsJson);
+    const newProductsB64 = utf8ToBase64(newProductsJson);
     
     console.log("Mise à jour products.json avec:", {
       productsCount: currentProducts.length,
@@ -174,7 +195,7 @@ export async function appendApprovedToGitHub(approved, sourcePending) {
     // Seulement mettre à jour si quelque chose a changé
     if (updatedPending.length !== currentPending.length) {
       const newPendingJson = JSON.stringify(updatedPending, null, 2);
-      const newPendingB64 = btoa(newPendingJson);
+      const newPendingB64 = utf8ToBase64(newPendingJson);
       
       console.log("Mise à jour pending.json:", {
         removed: sourcePending.id,
@@ -213,7 +234,7 @@ export async function removePendingOnGitHubById(id) {
     
     // Générer le JSON avec un formatage cohérent
     const newPendingJson = JSON.stringify(next, null, 2);
-    const newPendingB64 = btoa(newPendingJson);
+    const newPendingB64 = utf8ToBase64(newPendingJson);
     
     console.log("Suppression de pending.json:", {
       removedId: id,
