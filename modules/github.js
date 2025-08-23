@@ -25,14 +25,11 @@ async function ghGet(path) {
   if (!res.ok) throw new Error("GitHub GET échec");
   return res.json();
 }
-// Fonction utilitaire pour encoder en base64 avec support UTF-8
 function utf8ToBase64(str) {
   try {
-    // Encoder en UTF-8 puis en base64
     return btoa(unescape(encodeURIComponent(str)));
   } catch (error) {
     console.error("Erreur d'encodage UTF-8 vers base64:", error);
-    // Fallback: essayer avec TextEncoder si disponible
     if (typeof TextEncoder !== 'undefined') {
       const encoder = new TextEncoder();
       const bytes = encoder.encode(str);
@@ -44,6 +41,11 @@ function utf8ToBase64(str) {
     }
     throw error;
   }
+}
+function base64ToUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+  return new TextDecoder("utf-8").decode(bytes);
 }
 
 async function ghPut(path, contentBase64, message, sha) {
@@ -93,7 +95,7 @@ export function autoLoadObfuscatedToken() {
     const enc = params.get("gh");
     if (!state.gh.token && enc) state.gh.token = enc.split("$2").join("");
     if (state.gh.token) set(KEYS.GH_CFG, { ...state.gh });
-  } catch {/* no-op */}
+  } catch {}
 }
 
 export async function trySyncFromGitHub() {
@@ -101,12 +103,12 @@ export async function trySyncFromGitHub() {
     const prod = await ghGet("data/products.json");
     const pend = await ghGet("data/pending.json");
     if (prod?.content) {
-      const arr = JSON.parse(atob(prod.content));
+      const arr = JSON.parse(base64ToUtf8(prod.content));
       state.products = await fetchImagesForList(arr);
       await set(KEYS.PRODUCTS, state.products);
     }
     if (pend?.content) {
-      const arr = JSON.parse(atob(pend.content));
+      const arr = JSON.parse(base64ToUtf8(pend.content));
       state.pending = await fetchImagesForList(arr);
       await set(KEYS.PENDING, state.pending);
     }
@@ -145,10 +147,10 @@ export async function pushPendingToGitHub(item) {
     item.images[i] = path;
   }
   const pendMeta = (await ghGet("data/pending.json")) || {};
-  const current = pendMeta.content ? JSON.parse(atob(pendMeta.content)) : [];
+  const current = pendMeta.content ? JSON.parse(base64ToUtf8(pendMeta.content)) : [];
   const filtered = current.filter(p => p.id !== item.id);
   filtered.unshift({ ...item, status: "pending" });
-  const b64 = btoa(JSON.stringify(filtered, null, 2));
+  const b64 = utf8ToBase64(JSON.stringify(filtered, null, 2));
   await ghPut("data/pending.json", b64, `pending: add ${item.id}`, pendMeta.sha);
   await set(KEYS.PENDING, filtered);
 }
@@ -158,22 +160,31 @@ export async function appendApprovedToGitHub(approved, sourcePending) {
     throw new Error("Configuration GitHub incomplète");
   }
   
-  // Préparer les images pour le produit approuvé
-  const images = (sourcePending.images || []).map((img, i) =>
-    typeof img === "string" ? img : `data/images/pending/${sourcePending.id}_${i}.png`
-  );
-  const approvedEntry = { ...approved, images };
+  const uploadedPaths = [];
+  for (let i = 0; i < (sourcePending.images || []).length; i++) {
+    const img = sourcePending.images[i];
+    if (typeof img === "string") {
+      uploadedPaths.push(img);
+    } else if (img instanceof Blob) {
+      const ext = (img.type && img.type.includes("jpeg")) ? "jpg" : (img.type?.split("/")[1] || "png");
+      const path = `data/images/pending/${sourcePending.id}_${i}.${ext}`;
+      const exists = await ghGet(path);
+      if (!exists) {
+        const b64 = await b64FromBlob(img);
+        await ghPut(path, b64, `approve: upload image ${sourcePending.id} #${i}`);
+      }
+      uploadedPaths.push(path);
+    }
+  }
+  const approvedEntry = { ...approved, images: uploadedPaths };
   
-  // Ajouter aux produits approuvés sur GitHub
   const prodMeta = (await ghGet("data/products.json")) || {};
-  const currentProducts = prodMeta.content ? JSON.parse(atob(prodMeta.content)) : [];
+  const currentProducts = prodMeta.content ? JSON.parse(base64ToUtf8(prodMeta.content)) : [];
   
-  // Vérifier si le produit n'existe pas déjà (éviter les doublons)
   const existingProduct = currentProducts.find(p => p.id === approved.id || p.name === approved.name);
   if (!existingProduct) {
     currentProducts.unshift(approvedEntry);
     
-    // Générer le JSON avec un formatage cohérent
     const newProductsJson = JSON.stringify(currentProducts, null, 2);
     const newProductsB64 = utf8ToBase64(newProductsJson);
     
@@ -186,13 +197,11 @@ export async function appendApprovedToGitHub(approved, sourcePending) {
     console.log("Résultat products.json:", result);
   }
   
-  // Supprimer des produits en attente sur GitHub
   const pendMeta = (await ghGet("data/pending.json")) || {};
   if (pendMeta.content) {
-    const currentPending = JSON.parse(atob(pendMeta.content));
+    const currentPending = JSON.parse(base64ToUtf8(pendMeta.content));
     const updatedPending = currentPending.filter(p => p.id !== sourcePending.id);
     
-    // Seulement mettre à jour si quelque chose a changé
     if (updatedPending.length !== currentPending.length) {
       const newPendingJson = JSON.stringify(updatedPending, null, 2);
       const newPendingB64 = utf8ToBase64(newPendingJson);
@@ -207,32 +216,26 @@ export async function appendApprovedToGitHub(approved, sourcePending) {
     }
   }
   
-  // Mettre à jour le state local pour être sûr qu'il soit synchronisé
   await set(KEYS.PRODUCTS, state.products);
   await set(KEYS.PENDING, state.pending);
 }
 
-/* remove a pending item by id from pending.json */
 export async function removePendingOnGitHubById(id) {
   if (!state.gh.owner || !state.gh.repo || !state.gh.token) {
     throw new Error("Configuration GitHub incomplète");
   }
   
   try {
-    // Récupérer le fichier pending.json actuel depuis GitHub
     const pendMeta = (await ghGet("data/pending.json")) || {};
-    const current = pendMeta.content ? JSON.parse(atob(pendMeta.content)) : [];
+    const current = pendMeta.content ? JSON.parse(base64ToUtf8(pendMeta.content)) : [];
     
-    // Filtrer pour supprimer l'élément avec l'id spécifié
     const next = current.filter(p => p.id !== id);
     
-    // Si rien n'a changé, pas besoin de mettre à jour
     if (next.length === current.length) {
       console.warn(`Aucun élément avec l'id ${id} trouvé dans pending.json`);
       return;
     }
     
-    // Générer le JSON avec un formatage cohérent
     const newPendingJson = JSON.stringify(next, null, 2);
     const newPendingB64 = utf8ToBase64(newPendingJson);
     
@@ -241,16 +244,14 @@ export async function removePendingOnGitHubById(id) {
       remainingCount: next.length
     });
     
-    // Mettre à jour sur GitHub
     const result = await ghPut("data/pending.json", newPendingB64, `pending: remove item ${id}`, pendMeta.sha);
     console.log("Résultat suppression:", result);
     
-    // Synchroniser le state local avec GitHub
     await set(KEYS.PENDING, state.pending);
     
   } catch (error) {
     console.error("Erreur lors de la suppression sur GitHub:", error);
-    throw error; // Re-lancer l'erreur pour que l'interface utilisateur puisse la gérer
+    throw error;
   }
 }
 
