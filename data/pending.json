@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "id": "b08c0b7f-d5b1-4f5b-99eb-f278f1e43956",
+    "name": "fefef",
+    "brand": "efsfsf",
+    "images": [
+      "data/images/pending/b08c0b7f-d5b1-4f5b-99eb-f278f1e43956_0.jpg",
+      "data/images/pending/b08c0b7f-d5b1-4f5b-99eb-f278f1e43956_1.webp",
+      "data/images/pending/b08c0b7f-d5b1-4f5b-99eb-f278f1e43956_2.jpg"
+    ],
+    "submittedAt": 1755938042210,
+    "status": "pending"
+  }
+]
