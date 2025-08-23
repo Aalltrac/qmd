@@ -34,20 +34,5 @@
     ],
     "score": 82,
     "approvedAt": 1755894551983
-  },
-  {
-    "id": "74a34c1c-96d8-42ba-83b4-1d23951db79f",
-    "name": "Aucun produit publie",
-    "brand": "None",
-    "images": [],
-    "positives": [
-      "None"
-    ],
-    "negatives": [
-      "None"
-    ],
-    "advice": "None",
-    "score": 100,
-    "approvedAt": 1755626066719
   }
 ]
