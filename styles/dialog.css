@@ -32,4 +32,3 @@ dialog::backdrop {
   backdrop-filter: blur(12px) saturate(120%); animation: backdropFade .3s ease-out;
 }
 dialog { animation: dialogSlide .3s var(--bounce); }
-

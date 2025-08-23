@@ -165,7 +165,7 @@
   transform: translateY(-50%);
 }
 .hero-cta .primary:hover {
-  transform: translateY(-4px) scale(1.05);
+  transform: scale(1.06);
   box-shadow: var(--shadow-glow);
 }
 
