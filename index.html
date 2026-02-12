@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QMD Tech - Configurateur PC</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero__logo" aria-label="Logo QMD Tech">QMD</div>
+    <div>
+      <h1>QMD Tech</h1>
+      <p>Configurez votre PC idéal, comparez les marchands, suivez l'historique des prix et partagez votre build.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="actions">
+      <button id="shareConfig">Partager la configuration</button>
+      <button id="openMerchants">Ouvrir tous les marchands sélectionnés</button>
+      <p id="shareResult" role="status" aria-live="polite"></p>
+    </section>
+
+    <section>
+      <h2>Configurateur</h2>
+      <div id="configurator" class="grid"></div>
+    </section>
+
+    <section class="summary">
+      <h2>Résumé</h2>
+      <ul id="summaryList"></ul>
+      <p id="totalPrice">Total : 0,00 €</p>
+    </section>
+
+    <section class="community">
+      <h2>Communauté</h2>
+      <p><strong>Donations :</strong> <a href="https://paypal.me/aalltraca" target="_blank" rel="noopener noreferrer">paypal.me/aalltraca</a></p>
+      <p><strong>Serveur Discord :</strong> <a href="https://discord.gg/tnBGMGuQ79" target="_blank" rel="noopener noreferrer">Rejoindre QMD Tech</a></p>
+    </section>
+
+    <section class="contact">
+      <h2>Formulaire de contact</h2>
+      <form action="mailto:qmdtech.contact@gmail.com" method="post" enctype="text/plain">
+        <label for="name">Nom</label>
+        <input id="name" name="name" required />
+
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" required />
+
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="5" required></textarea>
+
+        <button type="submit">Envoyer</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>© <span id="year"></span> QMD Tech - Hébergement 100% GitHub Pages</p>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

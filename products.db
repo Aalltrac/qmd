@@ -1,0 +1,161 @@
+{
+  "categories": {
+    "Processeur": [
+      {
+        "id": "cpu-7800x3d",
+        "name": "AMD Ryzen 7 7800X3D",
+        "specs": { "Cœurs/Threads": "8/16", "Fréquence": "4.2 - 5.0 GHz", "Socket": "AM5" },
+        "merchants": [
+          { "name": "TopAchat", "price": 379.99, "url": "https://www.topachat.com" },
+          { "name": "LDLC", "price": 389.95, "url": "https://www.ldlc.com" },
+          { "name": "Amazon", "price": 384.90, "url": "https://www.amazon.fr" }
+        ],
+        "priceHistory": [399.99, 392.49, 389.00, 384.90, 381.00, 379.99]
+      }
+    ],
+    "Refroidissement Processeur": [
+      {
+        "id": "cool-ak620",
+        "name": "DeepCool AK620",
+        "specs": { "Type": "Aircooling", "Ventilateurs": "2x120mm", "Hauteur": "160 mm" },
+        "merchants": [
+          { "name": "Materiel.net", "price": 69.95, "url": "https://www.materiel.net" },
+          { "name": "Amazon", "price": 64.99, "url": "https://www.amazon.fr" }
+        ],
+        "priceHistory": [79.99, 74.99, 71.99, 68.49, 66.99, 64.99]
+      }
+    ],
+    "Carte Mère": [
+      {
+        "id": "mb-b650",
+        "name": "MSI B650 Tomahawk WiFi",
+        "specs": { "Chipset": "B650", "RAM max": "192 Go DDR5", "Format": "ATX" },
+        "merchants": [
+          { "name": "LDLC", "price": 229.95, "url": "https://www.ldlc.com" },
+          { "name": "TopAchat", "price": 219.99, "url": "https://www.topachat.com" }
+        ],
+        "priceHistory": [259.00, 249.99, 239.00, 232.00, 224.99, 219.99]
+      }
+    ],
+    "RAM": [
+      {
+        "id": "ram-32-6000",
+        "name": "Corsair Vengeance 32Go DDR5 6000",
+        "specs": { "Capacité": "32 Go (2x16)", "Fréquence": "6000 MHz", "Latence": "CL30" },
+        "merchants": [
+          { "name": "Amazon", "price": 119.99, "url": "https://www.amazon.fr" },
+          { "name": "Cdiscount", "price": 124.99, "url": "https://www.cdiscount.com" }
+        ],
+        "priceHistory": [149.99, 139.99, 133.50, 129.00, 122.49, 119.99]
+      }
+    ],
+    "Stockage": [
+      {
+        "id": "ssd-sn850x",
+        "name": "WD Black SN850X 2To",
+        "specs": { "Type": "NVMe PCIe 4.0", "Lecture": "7300 MB/s", "Capacité": "2 To" },
+        "merchants": [
+          { "name": "Amazon", "price": 149.90, "url": "https://www.amazon.fr" },
+          { "name": "RueDuCommerce", "price": 154.99, "url": "https://www.rueducommerce.fr" }
+        ],
+        "priceHistory": [199.99, 189.99, 179.99, 169.99, 159.99, 149.90]
+      }
+    ],
+    "Carte Graphique": [
+      {
+        "id": "gpu-4070s",
+        "name": "NVIDIA GeForce RTX 4070 SUPER",
+        "specs": { "VRAM": "12 Go GDDR6X", "Consommation": "220W", "Sorties": "HDMI + 3xDP" },
+        "merchants": [
+          { "name": "TopAchat", "price": 649.99, "url": "https://www.topachat.com" },
+          { "name": "LDLC", "price": 669.95, "url": "https://www.ldlc.com" }
+        ],
+        "priceHistory": [729.00, 709.00, 689.99, 679.99, 659.99, 649.99]
+      }
+    ],
+    "Boîtier": [
+      {
+        "id": "case-4000d",
+        "name": "Corsair 4000D Airflow",
+        "specs": { "Format": "ATX Mid Tower", "Ventilation": "Façade mesh", "Longueur GPU": "360 mm" },
+        "merchants": [
+          { "name": "Amazon", "price": 99.99, "url": "https://www.amazon.fr" },
+          { "name": "Materiel.net", "price": 104.95, "url": "https://www.materiel.net" }
+        ],
+        "priceHistory": [124.99, 119.99, 115.00, 109.99, 104.99, 99.99]
+      }
+    ],
+    "Alimentation": [
+      {
+        "id": "psu-rm850e",
+        "name": "Corsair RM850e",
+        "specs": { "Puissance": "850W", "Certification": "80+ Gold", "Modulaire": "Oui" },
+        "merchants": [
+          { "name": "LDLC", "price": 129.95, "url": "https://www.ldlc.com" },
+          { "name": "TopAchat", "price": 124.99, "url": "https://www.topachat.com" }
+        ],
+        "priceHistory": [159.99, 149.99, 142.00, 137.99, 132.99, 124.99]
+      }
+    ],
+    "Ventilateurs": [
+      {
+        "id": "fan-p12-pack",
+        "name": "Arctic P12 PWM PST (x5)",
+        "specs": { "Taille": "120 mm", "Débit": "56.3 CFM", "Niveau sonore": "0.3 Sone" },
+        "merchants": [
+          { "name": "Amazon", "price": 31.90, "url": "https://www.amazon.fr" },
+          { "name": "Cdiscount", "price": 34.99, "url": "https://www.cdiscount.com" }
+        ],
+        "priceHistory": [39.99, 37.99, 36.99, 34.99, 32.99, 31.90]
+      }
+    ],
+    "Ecran": [
+      {
+        "id": "monitor-m27q",
+        "name": "Gigabyte M27Q",
+        "specs": { "Taille": "27\"", "Résolution": "2560x1440", "Fréquence": "170 Hz" },
+        "merchants": [
+          { "name": "Amazon", "price": 279.99, "url": "https://www.amazon.fr" },
+          { "name": "LDLC", "price": 289.95, "url": "https://www.ldlc.com" }
+        ],
+        "priceHistory": [329.00, 319.00, 309.99, 299.99, 289.99, 279.99]
+      }
+    ],
+    "Clavier": [
+      {
+        "id": "kb-k70",
+        "name": "Corsair K70 RGB Pro",
+        "specs": { "Type": "Mécanique", "Switch": "Cherry MX", "Format": "AZERTY FR" },
+        "merchants": [
+          { "name": "Amazon", "price": 149.99, "url": "https://www.amazon.fr" },
+          { "name": "Fnac", "price": 159.99, "url": "https://www.fnac.com" }
+        ],
+        "priceHistory": [189.99, 179.99, 169.99, 164.99, 154.99, 149.99]
+      }
+    ],
+    "Souris": [
+      {
+        "id": "mouse-gpx2",
+        "name": "Logitech G Pro X Superlight 2",
+        "specs": { "Poids": "60g", "Capteur": "HERO 2", "Connexion": "Sans fil" },
+        "merchants": [
+          { "name": "Amazon", "price": 139.99, "url": "https://www.amazon.fr" },
+          { "name": "Darty", "price": 149.99, "url": "https://www.darty.com" }
+        ],
+        "priceHistory": [169.99, 164.99, 159.99, 149.99, 144.99, 139.99]
+      }
+    ],
+    "Casque": [
+      {
+        "id": "headset-hs80",
+        "name": "Corsair HS80 RGB Wireless",
+        "specs": { "Type": "Sans fil", "Autonomie": "20h", "Compatibilité": "PC / PS5" },
+        "merchants": [
+          { "name": "Amazon", "price": 109.99, "url": "https://www.amazon.fr" },
+          { "name": "Fnac", "price": 119.99, "url": "https://www.fnac.com" }
+        ],
+        "priceHistory": [149.99, 139.99, 129.99, 124.99, 114.99, 109.99]
+      }
+    ]
+  }
+}
